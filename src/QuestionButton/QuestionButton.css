@@ -1,4 +1,25 @@
 .QuestionButton {
-  display:inline-block;
+  display: inline-block;
   line-height: 30px;
+}
+
+.QuestionButton button {
+  padding: 5px 10px;
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.QuestionButton button.selected {
+  background-color: lightblue;
+}
+
+.QuestionButton button:hover {
+  background-color: #f0f0f0;
+}
+
+.QuestionButton button.selected:hover {
+  background-color: #a8d8f0;
 }

@@ -99,6 +99,7 @@ class App extends Component<{}, AppState> {
             return <QuestionButton
               key={key}
               number={key}
+              isSelected={String(key) === this.state.selectedQuestion}
               getQuestion={this.questionClickHandler} />;
           })}
         </div>
