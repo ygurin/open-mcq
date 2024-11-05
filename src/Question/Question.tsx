@@ -14,8 +14,6 @@ interface QuestionProps {
 const Question: FC<QuestionProps> = ({ heading, ques, image, q1, q2, q3, q4 }) => {
   const [imageError, setImageError] = useState(false);
 
-  const imagePath = image ? `${process.env.PUBLIC_URL}/images/${image}` : '';
-
   // Reset error state when image prop changes
   useEffect(() => {
     setImageError(false);
@@ -40,11 +38,14 @@ const Question: FC<QuestionProps> = ({ heading, ques, image, q1, q2, q3, q4 }) =
       );
     }
 
+    const imagePath = `/images/${image}`;
+
     return (
       <img
         src={imagePath}
         alt="Question illustration"
         onError={() => setImageError(true)}
+        style={{ maxWidth: '100%', height: 'auto' }}
       />
     );
   };
