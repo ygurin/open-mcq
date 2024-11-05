@@ -31,12 +31,12 @@ class App extends Component<{}, AppState> {
   };
 
   getCategories = () => {
-    let lookup: { [key: string]: number } = {};
-    let items: Item[] = Data;
-    let result: string[] = [];
+    const lookup: { [key: string]: number } = {};
+    const items: Item[] = Data;
+    const result: string[] = [];
 
-    for (let item of items) {
-      let name = item.heading;
+    for (const item of items) {
+      const name = item.heading;
 
       if (!(name in lookup)) {
         lookup[name] = 1;
