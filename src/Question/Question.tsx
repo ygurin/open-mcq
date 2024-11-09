@@ -29,63 +29,56 @@ const Question: FC<QuestionProps> = ({
   hasNext
 }) => {
   const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
 
   // In Vite, we can directly reference files in the public directory using '/'
   const imagePath = image ? `/images/${image}` : '';
 
   useEffect(() => {
     setImageError(false);
+    setImageLoading(true);
   }, [image]);
 
-  const renderImage = () => {
-    if (!image) {
-      return null;
-    }
+  const handleImageLoad = () => {
+    setImageLoading(false);
+  };
 
-    if (imageError) {
-      return (
-        <div style={{
-          padding: '1rem',
-          border: '1px solid #ddd',
-          borderRadius: '4px',
-          textAlign: 'center',
-          color: '#666'
-        }}>
-          Image not available
-        </div>
-      );
-    }
+  const renderImage = () => {
+    if (!image) return null;
 
     return (
-      <img
-        src={imagePath}
-        alt="Question illustration"
-        onError={() => setImageError(true)}
-      />
+      <div className="image-container">
+        {imageError ? (
+          <div className="image-placeholder">
+            Image not available
+          </div>
+        ) : (
+          <img
+            className="question-image"
+            src={imagePath}
+            alt="Question illustration"
+            onError={() => setImageError(true)}
+            onLoad={handleImageLoad}
+            style={{ opacity: imageLoading ? 0 : 1 }}
+          />
+        )}
+      </div>
     );
   };
 
   return (
     <div className="Question">
-      <p>{heading}</p>
-      <p>{ques}</p>
-      <br />
-      <br />
+      <h2 className="question-header">{heading}</h2>
+      <div className="question-text-container">
+        <p className="question-text">{ques}</p>
+      </div>
       {renderImage()}
-      <br />
-      <br />
-      <button value={q1}>{q1}</button>
-      <br />
-      <br />
-      <button value={q2}>{q2}</button>
-      <br />
-      <br />
-      <button value={q3}>{q3}</button>
-      <br />
-      <br />
-      <button value={q4}>{q4}</button>
-      <br />
-      <br />
+      <div className="question-options">
+        <button className="option-button" value={q1}>{q1}</button>
+        <button className="option-button" value={q2}>{q2}</button>
+        <button className="option-button" value={q3}>{q3}</button>
+        <button className="option-button" value={q4}>{q4}</button>
+      </div>
       <div className="navigation-buttons">
         <button 
           onClick={onPrevious}
