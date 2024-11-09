@@ -15,7 +15,7 @@ interface Item {
   answer: string;
   id: string;
   update: string;
-  image?: string; // Optional property
+  image?: string;
 }
 
 interface AppState {
@@ -23,8 +23,7 @@ interface AppState {
   selectedQuestion: string;
 }
 
-class App extends Component<{}, AppState> {
-
+class App extends Component<object, AppState> {
   state: AppState = {
     selectedCategory: null,
     selectedQuestion: "0"
@@ -60,6 +59,23 @@ class App extends Component<{}, AppState> {
     this.setState({ selectedQuestion: e.currentTarget.value });
   };
 
+  handleNext = () => {
+    if (this.state.selectedCategory) {
+      const questions = this.getQuestions(this.state.selectedCategory);
+      const currentIndex = Number(this.state.selectedQuestion);
+      if (currentIndex < questions.length - 1) {
+        this.setState({ selectedQuestion: String(currentIndex + 1) });
+      }
+    }
+  };
+
+  handlePrevious = () => {
+    const currentIndex = Number(this.state.selectedQuestion);
+    if (currentIndex > 0) {
+      this.setState({ selectedQuestion: String(currentIndex - 1) });
+    }
+  };
+
   getImage = (path: string) => {
     try {
       return path.split('/').pop() || "";
@@ -87,8 +103,6 @@ class App extends Component<{}, AppState> {
       );
     } else {
       questionList = this.getQuestions(this.state.selectedCategory);
-      console.log(this.state.selectedQuestion);
-      console.log(questionList?.[Number(this.state.selectedQuestion)]);
     }
 
     let questionButtons = null;
@@ -108,19 +122,22 @@ class App extends Component<{}, AppState> {
 
     let questionView = null;
     if (this.state.selectedCategory !== null && questionList !== null) {
+      const currentIndex = Number(this.state.selectedQuestion);
       questionView = (
         <div>
-          {
-            <Question
-              heading={questionList[Number(this.state.selectedQuestion)].heading}
-              ques={questionList[Number(this.state.selectedQuestion)].question}
-              image={this.getImage(questionList[Number(this.state.selectedQuestion)].image ?? '')}
-              q1={questionList[Number(this.state.selectedQuestion)].questions[0]}
-              q2={questionList[Number(this.state.selectedQuestion)].questions[1]}
-              q3={questionList[Number(this.state.selectedQuestion)].questions[2]}
-              q4={questionList[Number(this.state.selectedQuestion)].questions[3]}
-            />
-          }
+          <Question
+            heading={questionList[currentIndex].heading}
+            ques={questionList[currentIndex].question}
+            image={this.getImage(questionList[currentIndex].image ?? '')}
+            q1={questionList[currentIndex].questions[0]}
+            q2={questionList[currentIndex].questions[1]}
+            q3={questionList[currentIndex].questions[2]}
+            q4={questionList[currentIndex].questions[3]}
+            onNext={this.handleNext}
+            onPrevious={this.handlePrevious}
+            hasNext={currentIndex < questionList.length - 1}
+            hasPrevious={currentIndex > 0}
+          />
         </div>
       );
     }

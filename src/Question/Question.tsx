@@ -9,12 +9,30 @@ interface QuestionProps {
   q2: string;
   q3: string;
   q4: string;
+  onNext: () => void;
+  onPrevious: () => void;
+  hasPrevious: boolean;
+  hasNext: boolean;
 }
 
-const Question: FC<QuestionProps> = ({ heading, ques, image, q1, q2, q3, q4 }) => {
+const Question: FC<QuestionProps> = ({ 
+  heading, 
+  ques, 
+  image, 
+  q1, 
+  q2, 
+  q3, 
+  q4,
+  onNext,
+  onPrevious,
+  hasPrevious,
+  hasNext
+}) => {
   const [imageError, setImageError] = useState(false);
 
-  // Reset error state when image prop changes
+  // In Vite, we can directly reference files in the public directory using '/'
+  const imagePath = image ? `/images/${image}` : '';
+
   useEffect(() => {
     setImageError(false);
   }, [image]);
@@ -38,14 +56,11 @@ const Question: FC<QuestionProps> = ({ heading, ques, image, q1, q2, q3, q4 }) =
       );
     }
 
-    const imagePath = `/images/${image}`;
-
     return (
       <img
         src={imagePath}
         alt="Question illustration"
         onError={() => setImageError(true)}
-        style={{ maxWidth: '100%', height: 'auto' }}
       />
     );
   };
@@ -69,6 +84,24 @@ const Question: FC<QuestionProps> = ({ heading, ques, image, q1, q2, q3, q4 }) =
       <br />
       <br />
       <button value={q4}>{q4}</button>
+      <br />
+      <br />
+      <div className="navigation-buttons">
+        <button 
+          onClick={onPrevious}
+          disabled={!hasPrevious}
+          className="nav-button"
+        >
+          Previous
+        </button>
+        <button 
+          onClick={onNext}
+          disabled={!hasNext}
+          className="nav-button"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
