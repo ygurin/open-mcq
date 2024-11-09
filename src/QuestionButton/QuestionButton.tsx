@@ -2,22 +2,37 @@ import { FC } from 'react';
 import './QuestionButton.css';
 
 interface QuestionButtonProps {
-  getQuestion: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   number: number;
   isSelected: boolean;
+  getQuestion: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  isAnswered?: boolean;
+  isCorrect?: boolean;
 }
 
-const QuestionButton: FC<QuestionButtonProps> = ({ getQuestion, number, isSelected }) => {
+const QuestionButton: FC<QuestionButtonProps> = ({ 
+  number, 
+  isSelected, 
+  getQuestion,
+  isAnswered,
+  isCorrect 
+}) => {
+  const getButtonClass = () => {
+    let className = 'QuestionButton';
+    if (isSelected) className += ' selected';
+    if (isAnswered) {
+      className += isCorrect ? ' correct' : ' incorrect';
+    }
+    return className;
+  };
+
   return (
-    <div className="QuestionButton">
-      <button 
-        onClick={getQuestion} 
-        value={String(number)}
-        className={isSelected ? 'selected' : ''}
-      >
-        {number + 1}
-      </button>
-    </div>
+    <button
+      className={getButtonClass()}
+      onClick={getQuestion}
+      value={number}
+    >
+      {number + 1}
+    </button>
   );
 };
 

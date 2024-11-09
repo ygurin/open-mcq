@@ -13,6 +13,9 @@ interface QuestionProps {
   onPrevious: () => void;
   hasPrevious: boolean;
   hasNext: boolean;
+  onAnswerSubmit: (selectedAnswer: string) => void;
+  isCorrect: boolean | null;
+  isAnswered: boolean;
 }
 
 const Question: FC<QuestionProps> = ({ 
@@ -26,12 +29,15 @@ const Question: FC<QuestionProps> = ({
   onNext,
   onPrevious,
   hasPrevious,
-  hasNext
+  hasNext,
+  onAnswerSubmit,
+  isCorrect,
+  isAnswered
 }) => {
   const [imageError, setImageError] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
 
-  // In Vite, we can directly reference files in the public directory using '/'
   const imagePath = image ? `/images/${image}` : '';
 
   useEffect(() => {
@@ -39,8 +45,40 @@ const Question: FC<QuestionProps> = ({
     setImageLoading(true);
   }, [image]);
 
+  useEffect(() => {
+    // Reset selected answer when question changes
+    setSelectedAnswer(null);
+  }, [ques]);
+
   const handleImageLoad = () => {
     setImageLoading(false);
+  };
+
+  const handleAnswerSelect = (answer: string) => {
+    if (!isAnswered) {
+      setSelectedAnswer(answer);
+    }
+  };
+
+  const handleAnswerSubmit = () => {
+    if (selectedAnswer) {
+      onAnswerSubmit(selectedAnswer);
+    }
+  };
+
+  const getButtonStyle = (answer: string) => {
+    if (isAnswered) {
+      if (selectedAnswer === answer) {
+        return `option-button ${isCorrect ? 'correct' : 'incorrect'}`;
+      }
+      return 'option-button';
+    }
+    
+    if (selectedAnswer === answer) {
+      return 'option-button selected';
+    }
+    
+    return 'option-button';
   };
 
   const renderImage = () => {
@@ -74,10 +112,48 @@ const Question: FC<QuestionProps> = ({
       </div>
       {renderImage()}
       <div className="question-options">
-        <button className="option-button" value={q1}>{q1}</button>
-        <button className="option-button" value={q2}>{q2}</button>
-        <button className="option-button" value={q3}>{q3}</button>
-        <button className="option-button" value={q4}>{q4}</button>
+        <button 
+          className={getButtonStyle(q1)}
+          onClick={() => handleAnswerSelect(q1)}
+          disabled={isAnswered}
+        >
+          {q1}
+        </button>
+        <button 
+          className={getButtonStyle(q2)}
+          onClick={() => handleAnswerSelect(q2)}
+          disabled={isAnswered}
+        >
+          {q2}
+        </button>
+        <button 
+          className={getButtonStyle(q3)}
+          onClick={() => handleAnswerSelect(q3)}
+          disabled={isAnswered}
+        >
+          {q3}
+        </button>
+        <button 
+          className={getButtonStyle(q4)}
+          onClick={() => handleAnswerSelect(q4)}
+          disabled={isAnswered}
+        >
+          {q4}
+        </button>
+      </div>
+      <div className="answer-section">
+        <button 
+          className="answer-button"
+          onClick={handleAnswerSubmit}
+          disabled={!selectedAnswer || isAnswered}
+        >
+          Answer
+        </button>
+        {isAnswered && (
+          <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
+            {isCorrect ? 'Correct!' : 'Incorrect!'}
+          </p>
+        )}
       </div>
       <div className="navigation-buttons">
         <button 

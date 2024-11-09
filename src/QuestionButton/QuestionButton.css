@@ -1,25 +1,40 @@
 .QuestionButton {
-  display: inline-block;
-  line-height: 30px;
-}
-
-.QuestionButton button {
-  padding: 5px 10px;
-  margin: 0 5px;
-  border: 1px solid #ccc;
+  margin: 5px;
+  padding: 8px 16px;
+  border: 1px solid #dee2e6;
   border-radius: 4px;
-  background-color: white;
+  background-color: #f8f9fa;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
-.QuestionButton button.selected {
-  background-color: lightblue;
+.QuestionButton:hover {
+  background-color: #e9ecef;
 }
 
-.QuestionButton button:hover {
-  background-color: #f0f0f0;
+.QuestionButton.selected {
+  background-color: #007bff;
+  color: white;
 }
 
-.QuestionButton button.selected:hover {
-  background-color: #a8d8f0;
+.QuestionButton.correct {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: white;
+}
+
+.QuestionButton.incorrect {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.QuestionButton.selected.correct {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.QuestionButton.selected.incorrect {
+  background-color: #dc3545;
+  border-color: #dc3545;
 }

@@ -18,15 +18,22 @@ interface Item {
   image?: string;
 }
 
+interface AnswerState {
+  isAnswered: boolean;
+  isCorrect: boolean;
+}
+
 interface AppState {
   selectedCategory: string | null;
   selectedQuestion: string;
+  answeredQuestions: { [key: string]: AnswerState };
 }
 
 class App extends Component<object, AppState> {
   state: AppState = {
     selectedCategory: null,
-    selectedQuestion: "0"
+    selectedQuestion: "0",
+    answeredQuestions: {}
   };
 
   getCategories = () => {
@@ -84,6 +91,30 @@ class App extends Component<object, AppState> {
     }
   };
 
+  handleAnswerSubmit = (selectedAnswer: string) => {
+    if (this.state.selectedCategory) {
+      const questions = this.getQuestions(this.state.selectedCategory);
+      const currentQuestion = questions[Number(this.state.selectedQuestion)];
+      const isCorrect = selectedAnswer === currentQuestion.answer;
+      
+      const questionKey = `${this.state.selectedCategory}-${this.state.selectedQuestion}`;
+      this.setState(prevState => ({
+        answeredQuestions: {
+          ...prevState.answeredQuestions,
+          [questionKey]: {
+            isAnswered: true,
+            isCorrect
+          }
+        }
+      }));
+    }
+  };
+
+  isQuestionAnswered = (category: string, questionIndex: string): AnswerState | undefined => {
+    const questionKey = `${category}-${questionIndex}`;
+    return this.state.answeredQuestions[questionKey];
+  };
+
   render() {
     const categoryList = this.getCategories();
     let categories = null;
@@ -110,11 +141,17 @@ class App extends Component<object, AppState> {
       questionButtons = (
         <div>
           {[...Array(questionList.length).keys()].map(key => {
+            const answerState = this.isQuestionAnswered(
+              this.state.selectedCategory!,
+              String(key)
+            );
             return <QuestionButton
               key={key}
               number={key}
               isSelected={String(key) === this.state.selectedQuestion}
-              getQuestion={this.questionClickHandler} />;
+              getQuestion={this.questionClickHandler}
+              isAnswered={answerState?.isAnswered}
+              isCorrect={answerState?.isCorrect} />;
           })}
         </div>
       );
@@ -123,6 +160,10 @@ class App extends Component<object, AppState> {
     let questionView = null;
     if (this.state.selectedCategory !== null && questionList !== null) {
       const currentIndex = Number(this.state.selectedQuestion);
+      const answerState = this.isQuestionAnswered(
+        this.state.selectedCategory,
+        this.state.selectedQuestion
+      );
       questionView = (
         <div>
           <Question
@@ -137,6 +178,9 @@ class App extends Component<object, AppState> {
             onPrevious={this.handlePrevious}
             hasNext={currentIndex < questionList.length - 1}
             hasPrevious={currentIndex > 0}
+            onAnswerSubmit={this.handleAnswerSubmit}
+            isCorrect={answerState?.isCorrect ?? null}
+            isAnswered={answerState?.isAnswered ?? false}
           />
         </div>
       );
