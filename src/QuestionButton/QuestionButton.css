@@ -1,7 +1,7 @@
 .QuestionButton {
   margin: 5px;
   padding: 8px 16px;
-  border: 1px solid #dee2e6;
+  border: 2px solid #dee2e6;
   border-radius: 4px;
   background-color: #f8f9fa;
   cursor: pointer;
@@ -13,28 +13,29 @@
 }
 
 .QuestionButton.selected {
-  background-color: #007bff;
-  color: white;
+  border-color: #007bff;
+  box-shadow: 0 0 0 1px #007bff;
 }
 
 .QuestionButton.correct {
   background-color: #28a745;
-  border-color: #28a745;
   color: white;
 }
 
 .QuestionButton.incorrect {
   background-color: #dc3545;
-  border-color: #dc3545;
   color: white;
 }
 
+/* When both selected and answered */
 .QuestionButton.selected.correct {
   background-color: #28a745;
-  border-color: #28a745;
+  border-color: #007bff;
+  box-shadow: 0 0 0 1px #007bff;
 }
 
 .QuestionButton.selected.incorrect {
   background-color: #dc3545;
-  border-color: #dc3545;
+  border-color: #007bff;
+  box-shadow: 0 0 0 1px #007bff;
 }
