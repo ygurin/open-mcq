@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import './Question.css';
 
 interface QuestionProps {
@@ -14,8 +14,10 @@ interface QuestionProps {
   hasPrevious: boolean;
   hasNext: boolean;
   onAnswerSubmit: (selectedAnswer: string) => void;
+  onAnswerSelect: (selectedAnswer: string) => void;
   isCorrect: boolean | null;
   isAnswered: boolean;
+  selectedAnswer: string | undefined;
 }
 
 const Question: FC<QuestionProps> = ({ 
@@ -31,37 +33,19 @@ const Question: FC<QuestionProps> = ({
   hasPrevious,
   hasNext,
   onAnswerSubmit,
+  onAnswerSelect,
   isCorrect,
-  isAnswered
+  isAnswered,
+  selectedAnswer
 }) => {
-  const [imageError, setImageError] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-
-  const imagePath = image ? `/images/${image}` : '';
-
-  useEffect(() => {
-    setImageError(false);
-    setImageLoading(true);
-  }, [image]);
-
-  useEffect(() => {
-    // Reset selected answer when question changes
-    setSelectedAnswer(null);
-  }, [ques]);
-
-  const handleImageLoad = () => {
-    setImageLoading(false);
-  };
-
   const handleAnswerSelect = (answer: string) => {
     if (!isAnswered) {
-      setSelectedAnswer(answer);
+      onAnswerSelect(answer);
     }
   };
 
   const handleAnswerSubmit = () => {
-    if (selectedAnswer) {
+    if (selectedAnswer && !isAnswered) {
       onAnswerSubmit(selectedAnswer);
     }
   };
@@ -81,36 +65,21 @@ const Question: FC<QuestionProps> = ({
     return 'option-button';
   };
 
-  const renderImage = () => {
-    if (!image) return null;
-
-    return (
-      <div className="image-container">
-        {imageError ? (
-          <div className="image-placeholder">
-            Image not available
-          </div>
-        ) : (
-          <img
-            className="question-image"
-            src={imagePath}
-            alt="Question illustration"
-            onError={() => setImageError(true)}
-            onLoad={handleImageLoad}
-            style={{ opacity: imageLoading ? 0 : 1 }}
-          />
-        )}
-      </div>
-    );
-  };
-
   return (
     <div className="Question">
       <h2 className="question-header">{heading}</h2>
       <div className="question-text-container">
         <p className="question-text">{ques}</p>
       </div>
-      {renderImage()}
+      {image && (
+        <div className="image-container">
+          <img
+            className="question-image"
+            src={`/images/${image}`}
+            alt="Question illustration"
+          />
+        </div>
+      )}
       <div className="question-options">
         <button 
           className={getButtonStyle(q1)}

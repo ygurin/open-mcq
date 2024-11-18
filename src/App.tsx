@@ -21,6 +21,7 @@ interface Item {
 interface AnswerState {
   isAnswered: boolean;
   isCorrect: boolean;
+  selectedAnswer?: string;  // Added to track the selected answer
 }
 
 interface AppState {
@@ -91,6 +92,26 @@ class App extends Component<object, AppState> {
     }
   };
 
+  handleAnswerSelection = (selectedAnswer: string) => {
+    if (this.state.selectedCategory) {
+      const questionKey = `${this.state.selectedCategory}-${this.state.selectedQuestion}`;
+      const existingState = this.state.answeredQuestions[questionKey];
+      
+      // Only update if not already answered
+      if (!existingState?.isAnswered) {
+        this.setState(prevState => ({
+          answeredQuestions: {
+            ...prevState.answeredQuestions,
+            [questionKey]: {
+              ...existingState,
+              selectedAnswer
+            }
+          }
+        }));
+      }
+    }
+  };
+
   handleAnswerSubmit = (selectedAnswer: string) => {
     if (this.state.selectedCategory) {
       const questions = this.getQuestions(this.state.selectedCategory);
@@ -103,7 +124,8 @@ class App extends Component<object, AppState> {
           ...prevState.answeredQuestions,
           [questionKey]: {
             isAnswered: true,
-            isCorrect
+            isCorrect,
+            selectedAnswer
           }
         }
       }));
@@ -178,9 +200,11 @@ class App extends Component<object, AppState> {
             onPrevious={this.handlePrevious}
             hasNext={currentIndex < questionList.length - 1}
             hasPrevious={currentIndex > 0}
+            onAnswerSelect={this.handleAnswerSelection}
             onAnswerSubmit={this.handleAnswerSubmit}
             isCorrect={answerState?.isCorrect ?? null}
             isAnswered={answerState?.isAnswered ?? false}
+            selectedAnswer={answerState?.selectedAnswer}
           />
         </div>
       );
