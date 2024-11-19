@@ -86,7 +86,7 @@
 .option-button {
   padding: 12px 20px;
   background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
+  border: 3px solid #dee2e6;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -145,6 +145,7 @@
 .option-button.selected {
   background-color: #cce5ff;
   border-color: #b8daff;
+  border: 2px solid #007bff;
 }
 
 .option-button.correct {
