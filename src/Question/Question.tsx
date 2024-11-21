@@ -1,4 +1,5 @@
-import { FC, useEffect } from 'react';
+import { FC, useState } from 'react';
+import Modal from './../Modal/Modal'
 import './Question.css';
 
 interface QuestionProps {
@@ -18,6 +19,7 @@ interface QuestionProps {
   isCorrect: boolean | null;
   isAnswered: boolean;
   selectedAnswer: string | undefined;
+  onQuit: () => void;
 }
 
 const Question: FC<QuestionProps> = ({ 
@@ -36,12 +38,24 @@ const Question: FC<QuestionProps> = ({
   onAnswerSelect,
   isCorrect,
   isAnswered,
-  selectedAnswer
+  selectedAnswer,
+  onQuit
 }) => {
   const handleAnswerSelect = (answer: string) => {
     if (!isAnswered) {
       onAnswerSelect(answer);
     }
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleQuit = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmQuit = () => {
+    setIsModalOpen(false);
+    onQuit();
   };
 
   const handleAnswerSubmit = () => {
@@ -126,6 +140,12 @@ const Question: FC<QuestionProps> = ({
       </div>
       <div className="navigation-buttons">
         <button 
+          onClick={handleQuit}
+          className="nav-button quit-button"
+        >
+          Quit
+        </button>
+        <button 
           onClick={onPrevious}
           disabled={!hasPrevious}
           className="nav-button"
@@ -140,6 +160,11 @@ const Question: FC<QuestionProps> = ({
           Next
         </button>
       </div>
+      <Modal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmQuit}
+      />
     </div>
   );
 };

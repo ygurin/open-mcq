@@ -137,6 +137,13 @@ class App extends Component<object, AppState> {
     return this.state.answeredQuestions[questionKey];
   };
 
+  handleQuit = () => {
+    this.setState({
+      selectedCategory: null,
+      selectedQuestion: "0"
+    });
+  };
+
   render() {
     const categoryList = this.getCategories();
     let categories = null;
@@ -205,6 +212,7 @@ class App extends Component<object, AppState> {
             isCorrect={answerState?.isCorrect ?? null}
             isAnswered={answerState?.isAnswered ?? false}
             selectedAnswer={answerState?.selectedAnswer}
+            onQuit={this.handleQuit}
           />
         </div>
       );

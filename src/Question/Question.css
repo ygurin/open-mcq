@@ -102,6 +102,18 @@
   display: flex;
   justify-content: center;
   gap: 10px;
+  position: relative;
+  padding: 0 100px;
+}
+
+.quit-button {
+  position: absolute;
+  left: 0;
+  background-color: #dc3545;
+}
+
+.quit-button:hover {
+  background-color: #c82333 !important;
 }
 
 .nav-button {
