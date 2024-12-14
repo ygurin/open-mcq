@@ -1,0 +1,52 @@
+/* src/ModeSelection/ModeSelection.css */
+.mode-selection {
+  text-align: center;
+  padding: 2rem;
+}
+
+.mode-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.mode-button {
+  width: 300px;
+  padding: 2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  text-align: left;
+}
+
+.mode-button:hover {
+  transform: translateY(-5px);
+}
+
+.mode-button h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+}
+
+.mode-button p {
+  margin: 0;
+  color: #666;
+}
+
+.mode-button.practice {
+  background-color: #e3f2fd;
+}
+
+.mode-button.test {
+  background-color: #fff3e0;
+}
+
+.mode-button.practice:hover {
+  background-color: #bbdefb;
+}
+
+.mode-button.test:hover {
+  background-color: #ffe0b2;
+}

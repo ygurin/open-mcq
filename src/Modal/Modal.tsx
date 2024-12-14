@@ -1,14 +1,19 @@
+// src/Modal/Modal.tsx
 import React from 'react';
 import './Modal.css';
 
-const Modal = ({ 
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  message?: string;  // Make message optional
+}
+
+const Modal: React.FC<ModalProps> = ({ 
   isOpen, 
   onClose, 
-  onConfirm 
-}: { 
-  isOpen: boolean; 
-  onClose: () => void; 
-  onConfirm: () => void; 
+  onConfirm,
+  message = "Are you sure you want to quit to the menu?" // Default message
 }) => {
   if (!isOpen) return null;
 
@@ -16,7 +21,7 @@ const Modal = ({
     <div className="modal-overlay">
       <div className="modal-content">
         <h3 className="modal-title">Quit to Menu</h3>
-        <p className="modal-message">Are you sure you want to quit to the menu?</p>
+        <p className="modal-message">{message}</p>
         <div className="modal-buttons">
           <button 
             onClick={onClose}

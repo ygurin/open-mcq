@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import './App.css';
 
 import Data from './data.json';
-
 import CategoryButton from './CategoryButton/CategoryButton';
 import QuestionButton from './QuestionButton/QuestionButton';
 import Question from './Question/Question';
+import ModeSelection from './ModeSelection/ModeSelection';
 
 interface Item {
   question: string;
@@ -21,20 +21,49 @@ interface Item {
 interface AnswerState {
   isAnswered: boolean;
   isCorrect: boolean;
-  selectedAnswer?: string;  // Added to track the selected answer
+  selectedAnswer?: string;
+}
+
+interface TestResults {
+  [category: string]: {
+    totalQuestions: number;
+    correctAnswers: number;
+    wrongAnswers: string[];
+  };
 }
 
 interface AppState {
+  mode: 'practice' | 'test' | null;
   selectedCategory: string | null;
   selectedQuestion: string;
   answeredQuestions: { [key: string]: AnswerState };
+  testResults: TestResults;
+  showResults: boolean;
 }
 
 class App extends Component<object, AppState> {
   state: AppState = {
+    mode: null,
     selectedCategory: null,
     selectedQuestion: "0",
-    answeredQuestions: {}
+    answeredQuestions: {},
+    testResults: {},
+    showResults: false
+  };
+
+  handleModeSelect = (mode: 'practice' | 'test') => {
+    this.setState({ mode });
+  };
+
+  handleExit = () => {
+    this.setState({
+      mode: null,
+      selectedCategory: null,
+      selectedQuestion: "0",
+      answeredQuestions: {},
+      testResults: {},
+      showResults: false
+    });
   };
 
   getCategories = () => {
@@ -44,7 +73,6 @@ class App extends Component<object, AppState> {
 
     for (const item of items) {
       const name = item.heading;
-
       if (!(name in lookup)) {
         lookup[name] = 1;
         result.push(name);
@@ -53,14 +81,33 @@ class App extends Component<object, AppState> {
     return result;
   };
 
-  getQuestions = (categ: string) => {
+  getQuestions = (categ: string): Item[] => {
     const items: Item[] = Data;
-    return items.filter(item => item.heading === categ);
+    
+    // Try exact match first
+    const exactMatches = items.filter(item => item.heading === categ);
+    
+    // If no exact matches, try normalized comparison
+    if (exactMatches.length === 0) {
+      const normalizedCateg = categ.trim().toLowerCase();
+      return items.filter(item => 
+        item.heading.trim().toLowerCase() === normalizedCateg
+      );
+    }
+    
+    return exactMatches;
   };
 
   handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    this.setState({ selectedQuestion: "0" });
-    this.setState({ selectedCategory: e.currentTarget.value });
+    const newCategory = e.currentTarget.value;
+    const questions = this.getQuestions(newCategory);
+    
+    if (questions.length > 0) {
+      this.setState({
+        selectedQuestion: "0",
+        selectedCategory: newCategory
+      });
+    }
   };
 
   questionClickHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -97,7 +144,6 @@ class App extends Component<object, AppState> {
       const questionKey = `${this.state.selectedCategory}-${this.state.selectedQuestion}`;
       const existingState = this.state.answeredQuestions[questionKey];
       
-      // Only update if not already answered
       if (!existingState?.isAnswered) {
         this.setState(prevState => ({
           answeredQuestions: {
@@ -119,16 +165,44 @@ class App extends Component<object, AppState> {
       const isCorrect = selectedAnswer === currentQuestion.answer;
       
       const questionKey = `${this.state.selectedCategory}-${this.state.selectedQuestion}`;
-      this.setState(prevState => ({
-        answeredQuestions: {
+      
+      this.setState(prevState => {
+        // Update answered questions
+        const newAnsweredQuestions = {
           ...prevState.answeredQuestions,
           [questionKey]: {
             isAnswered: true,
             isCorrect,
             selectedAnswer
           }
+        };
+
+        // Update test results if in test mode
+        let newTestResults = { ...prevState.testResults };
+        if (this.state.mode === 'test') {
+          const categoryResults = prevState.testResults[this.state.selectedCategory!] || {
+            totalQuestions: 0,
+            correctAnswers: 0,
+            wrongAnswers: []
+          };
+
+          newTestResults = {
+            ...newTestResults,
+            [this.state.selectedCategory!]: {
+              totalQuestions: categoryResults.totalQuestions + 1,
+              correctAnswers: categoryResults.correctAnswers + (isCorrect ? 1 : 0),
+              wrongAnswers: isCorrect 
+                ? categoryResults.wrongAnswers 
+                : [...categoryResults.wrongAnswers, currentQuestion.id]
+            }
+          };
         }
-      }));
+
+        return {
+          answeredQuestions: newAnsweredQuestions,
+          testResults: newTestResults
+        };
+      });
     }
   };
 
@@ -138,88 +212,232 @@ class App extends Component<object, AppState> {
   };
 
   handleQuit = () => {
+    if (this.state.mode === 'test') {
+      this.setState({ showResults: true });
+    } else {
+      this.setState({
+        selectedCategory: null,
+        selectedQuestion: "0"
+      });
+    }
+  };
+
+  handleRestartTest = () => {
     this.setState({
+      mode: null,
       selectedCategory: null,
-      selectedQuestion: "0"
+      selectedQuestion: "0",
+      answeredQuestions: {},
+      testResults: {},
+      showResults: false
+    });
+  };
+
+  renderResults = () => {
+    const { testResults } = this.state;
+    let totalCorrect = 0;
+    let totalQuestions = 0;
+  
+    Object.values(testResults).forEach(result => {
+      totalCorrect += result.correctAnswers;
+      totalQuestions += result.totalQuestions;
+    });
+  
+    return (
+      <div className="test-results">
+        <h2>Test Results</h2>
+        <h3>Overall Score: {totalCorrect} out of {totalQuestions}</h3>
+        {Object.entries(testResults).map(([category, result]) => (
+          <div key={category} className="category-result">
+            <h4>{category}</h4>
+            <p>Score: {result.correctAnswers} out of {result.totalQuestions}</p>
+            {result.wrongAnswers.length > 0 && (
+              <div className="wrong-answers-section">
+                <p>Incorrect Questions: {result.wrongAnswers.length}</p>
+                <button 
+                  onClick={() => this.reviewWrongAnswers(category, result.wrongAnswers)}
+                  className="review-button"
+                >
+                  Review Wrong Answers
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+        <button 
+          onClick={this.handleRestartTest}
+          className="restart-button"
+        >
+          Start New Test
+        </button>
+      </div>
+    );
+  };
+
+  reviewWrongAnswers = (category: string, wrongAnswers: string[]) => {
+    // Find the index of the first wrong answer in the current category
+    const questions = this.getQuestions(category);
+    const firstWrongQuestionIndex = questions.findIndex(q => wrongAnswers.includes(q.id));
+    
+    this.setState({
+      showResults: false,
+      selectedCategory: category,
+      selectedQuestion: String(Math.max(0, firstWrongQuestionIndex))
+    });
+  };
+
+  handleBackToModeSelection = () => {
+    this.setState({
+      mode: null,
+      selectedCategory: null,
+      selectedQuestion: "0",
+      answeredQuestions: {},
+      testResults: {}
     });
   };
 
   render() {
+    const { mode, selectedCategory, showResults } = this.state;
+
+    if (showResults) {
+      return this.renderResults();
+    }
+
+    if (!mode) {
+      return <ModeSelection onSelectMode={this.handleModeSelect} />;
+    }
+
     const categoryList = this.getCategories();
     let categories = null;
     let questionList: Item[] | null = null;
 
-    if (this.state.selectedCategory === null) {
+    if (!selectedCategory) {
       categories = (
         <div>
-          <p>Select a Category</p>
-          {categoryList.map(categ => {
-            return <CategoryButton
-              key={categ}
-              getCategory={this.handleClick}
-              text={categ} />;
-          })}
+          <h2>Select a Category</h2>
+          {mode === 'test' && (
+            <p className="test-mode-info">
+              Test Mode: Your answers will be scored and you'll receive a final result
+            </p>
+          )}
+          <div className="category-list">
+            {categoryList.map(categ => {
+              const categoryProgress = mode === 'test' && this.state.testResults[categ] 
+                ? `(${this.state.testResults[categ].correctAnswers}/${this.state.testResults[categ].totalQuestions})`
+                : '';
+              
+              return (
+                <CategoryButton
+                  key={categ}
+                  getCategory={this.handleClick}
+                  text={`${categ} ${categoryProgress}`} 
+                />
+              );
+            })}
+          </div>
+          <div className="navigation-buttons">
+            <button 
+              onClick={this.handleBackToModeSelection}
+              className="nav-button back-button"
+            >
+              Back to Mode Selection
+            </button>
+          </div>
         </div>
       );
     } else {
-      questionList = this.getQuestions(this.state.selectedCategory);
+      questionList = this.getQuestions(selectedCategory);
+      console.log('Question list:', questionList);
     }
 
     let questionButtons = null;
-    if (this.state.selectedCategory !== null && questionList !== null) {
+    let questionView = null;
+
+    if (selectedCategory && questionList && questionList.length > 0) {
+      const currentIndex = Math.min(
+        Number(this.state.selectedQuestion),
+        questionList.length - 1
+      );
+
+      console.log('Current question index:', currentIndex);
+
+      // Question Buttons
       questionButtons = (
-        <div>
-          {[...Array(questionList.length).keys()].map(key => {
-            const answerState = this.isQuestionAnswered(
-              this.state.selectedCategory!,
-              String(key)
-            );
-            return <QuestionButton
-              key={key}
-              number={key}
-              isSelected={String(key) === this.state.selectedQuestion}
-              getQuestion={this.questionClickHandler}
-              isAnswered={answerState?.isAnswered}
-              isCorrect={answerState?.isCorrect} />;
-          })}
+        <div className="question-navigation">
+          {mode === 'test' && (
+            <div className="test-progress">
+              Questions answered: {Object.keys(this.state.answeredQuestions).length} / {questionList.length}
+            </div>
+          )}
+          <div className="question-buttons">
+            {questionList.map((_, index) => {
+              const answerState = this.isQuestionAnswered(
+                selectedCategory,
+                String(index)
+              );
+              return (
+                <QuestionButton
+                  key={index}
+                  number={index}
+                  isSelected={String(index) === String(currentIndex)}
+                  getQuestion={this.questionClickHandler}
+                  isAnswered={answerState?.isAnswered}
+                  isCorrect={answerState?.isCorrect}
+                />
+              );
+            })}
+          </div>
         </div>
       );
+
+      // Get current question with safety checks
+      const currentQuestion = questionList[currentIndex];
+      console.log('Current question:', currentQuestion);
+
+      if (currentQuestion) {
+        const answerState = this.isQuestionAnswered(
+          selectedCategory,
+          String(currentIndex)
+        );
+
+        questionView = (
+          <div className="question-container">
+            <Question
+              mode={mode}
+              heading={currentQuestion.heading}
+              ques={currentQuestion.question}
+              image={this.getImage(currentQuestion.image ?? '')}
+              q1={currentQuestion.questions[0]}
+              q2={currentQuestion.questions[1]}
+              q3={currentQuestion.questions[2]}
+              q4={currentQuestion.questions[3]}
+              explanation={mode === 'practice' ? currentQuestion.explanation : undefined}
+              onNext={this.handleNext}
+              onPrevious={this.handlePrevious}
+              hasNext={currentIndex < questionList.length - 1}
+              hasPrevious={currentIndex > 0}
+              onAnswerSelect={this.handleAnswerSelection}
+              onAnswerSubmit={this.handleAnswerSubmit}
+              isCorrect={answerState?.isCorrect ?? null}
+              isAnswered={answerState?.isAnswered ?? false}
+              selectedAnswer={answerState?.selectedAnswer}
+              onQuit={this.handleQuit}
+            />
+          </div>
+        );
+      }
     }
 
-    let questionView = null;
-    if (this.state.selectedCategory !== null && questionList !== null) {
-      const currentIndex = Number(this.state.selectedQuestion);
-      const answerState = this.isQuestionAnswered(
-        this.state.selectedCategory,
-        this.state.selectedQuestion
-      );
-      questionView = (
-        <div>
-          <Question
-            heading={questionList[currentIndex].heading}
-            ques={questionList[currentIndex].question}
-            image={this.getImage(questionList[currentIndex].image ?? '')}
-            q1={questionList[currentIndex].questions[0]}
-            q2={questionList[currentIndex].questions[1]}
-            q3={questionList[currentIndex].questions[2]}
-            q4={questionList[currentIndex].questions[3]}
-            onNext={this.handleNext}
-            onPrevious={this.handlePrevious}
-            hasNext={currentIndex < questionList.length - 1}
-            hasPrevious={currentIndex > 0}
-            onAnswerSelect={this.handleAnswerSelection}
-            onAnswerSubmit={this.handleAnswerSubmit}
-            isCorrect={answerState?.isCorrect ?? null}
-            isAnswered={answerState?.isAnswered ?? false}
-            selectedAnswer={answerState?.selectedAnswer}
-            onQuit={this.handleQuit}
-          />
-        </div>
-      );
+    // Debug information for when no question is shown
+    if (selectedCategory && (!questionList || questionList.length === 0)) {
+      console.error('No questions available for category:', selectedCategory);
     }
 
     return (
-      <div className="App">
+      <div className={`App ${mode}-mode`}>
+        <div className="mode-indicator">
+          {mode === 'practice' ? 'Practice Mode' : 'Test Mode'}
+        </div>
         {categories}
         {questionButtons}
         {questionView}

@@ -1,8 +1,9 @@
 import { FC, useState } from 'react';
-import Modal from './../Modal/Modal'
+import Modal from './../Modal/Modal';
 import './Question.css';
 
 interface QuestionProps {
+  mode: 'practice' | 'test';
   heading: string;
   ques: string;
   image?: string;
@@ -10,6 +11,7 @@ interface QuestionProps {
   q2: string;
   q3: string;
   q4: string;
+  explanation?: string;
   onNext: () => void;
   onPrevious: () => void;
   hasPrevious: boolean;
@@ -22,14 +24,16 @@ interface QuestionProps {
   onQuit: () => void;
 }
 
-const Question: FC<QuestionProps> = ({ 
-  heading, 
-  ques, 
-  image, 
-  q1, 
-  q2, 
-  q3, 
+const Question: FC<QuestionProps> = ({
+  mode,
+  heading,
+  ques,
+  image,
+  q1,
+  q2,
+  q3,
   q4,
+  explanation,
   onNext,
   onPrevious,
   hasPrevious,
@@ -41,12 +45,6 @@ const Question: FC<QuestionProps> = ({
   selectedAnswer,
   onQuit
 }) => {
-  const handleAnswerSelect = (answer: string) => {
-    if (!isAnswered) {
-      onAnswerSelect(answer);
-    }
-  };
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleQuit = () => {
@@ -56,12 +54,6 @@ const Question: FC<QuestionProps> = ({
   const handleConfirmQuit = () => {
     setIsModalOpen(false);
     onQuit();
-  };
-
-  const handleAnswerSubmit = () => {
-    if (selectedAnswer && !isAnswered) {
-      onAnswerSubmit(selectedAnswer);
-    }
   };
 
   const getButtonStyle = (answer: string) => {
@@ -97,28 +89,28 @@ const Question: FC<QuestionProps> = ({
       <div className="question-options">
         <button 
           className={getButtonStyle(q1)}
-          onClick={() => handleAnswerSelect(q1)}
+          onClick={() => onAnswerSelect(q1)}
           disabled={isAnswered}
         >
           {q1}
         </button>
         <button 
           className={getButtonStyle(q2)}
-          onClick={() => handleAnswerSelect(q2)}
+          onClick={() => onAnswerSelect(q2)}
           disabled={isAnswered}
         >
           {q2}
         </button>
         <button 
           className={getButtonStyle(q3)}
-          onClick={() => handleAnswerSelect(q3)}
+          onClick={() => onAnswerSelect(q3)}
           disabled={isAnswered}
         >
           {q3}
         </button>
         <button 
           className={getButtonStyle(q4)}
-          onClick={() => handleAnswerSelect(q4)}
+          onClick={() => onAnswerSelect(q4)}
           disabled={isAnswered}
         >
           {q4}
@@ -127,15 +119,23 @@ const Question: FC<QuestionProps> = ({
       <div className="answer-section">
         <button 
           className="answer-button"
-          onClick={handleAnswerSubmit}
+          onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
           disabled={!selectedAnswer || isAnswered}
         >
-          Answer
+          {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
         </button>
         {isAnswered && (
-          <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
-            {isCorrect ? 'Correct!' : 'Incorrect!'}
-          </p>
+          <div className="feedback-section">
+            <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
+              {isCorrect ? 'Correct!' : 'Incorrect!'}
+            </p>
+            {mode === 'practice' && explanation && !isCorrect && (
+              <div className="explanation">
+                <h4>Explanation:</h4>
+                <p>{explanation}</p>
+              </div>
+            )}
+          </div>
         )}
       </div>
       <div className="navigation-buttons">
@@ -143,7 +143,7 @@ const Question: FC<QuestionProps> = ({
           onClick={handleQuit}
           className="nav-button quit-button"
         >
-          Quit
+          {mode === 'test' ? 'Finish Test' : 'Quit'}
         </button>
         <button 
           onClick={onPrevious}
@@ -164,6 +164,7 @@ const Question: FC<QuestionProps> = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmQuit}
+        message={mode === 'test' ? 'Are you sure you want to finish the test?' : 'Are you sure you want to quit to the menu?'}
       />
     </div>
   );

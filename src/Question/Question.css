@@ -212,3 +212,28 @@
 .answer-feedback.incorrect {
   color: #721c24;
 }
+
+.feedback-section {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.explanation {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.explanation h4 {
+  margin: 0 0 10px 0;
+  color: #495057;
+}
+
+.explanation p {
+  margin: 0;
+  line-height: 1.5;
+  color: #212529;
+}
