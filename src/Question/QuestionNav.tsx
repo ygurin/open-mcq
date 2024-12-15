@@ -13,29 +13,31 @@ const QuestionNav: React.FC<QuestionNavProps> = ({
   answeredQuestions,
 }) => {
   return (
-    <div className="flex items-center justify-between p-4 border-b">
-      <button
-        onClick={onPrevious}
-        disabled={!hasPrevious}
-        className="nav-button"
-      >
-        Previous
-      </button>
-
-      <QuestionSelector
-        currentQuestion={currentQuestion}
-        totalQuestions={totalQuestions}
-        onQuestionSelect={onQuestionSelect}
-        answeredQuestions={answeredQuestions}
-      />
-
-      <button
-        onClick={onNext}
-        disabled={!hasNext}
-        className="nav-button"
-      >
-        Next
-      </button>
+    <div className="question-nav">
+      <div className="selector-row">
+        <QuestionSelector
+          currentQuestion={currentQuestion}
+          totalQuestions={totalQuestions}
+          onQuestionSelect={onQuestionSelect}
+          answeredQuestions={answeredQuestions}
+        />
+      </div>
+      <div className="nav-buttons-row">
+        <button
+          onClick={onPrevious}
+          disabled={!hasPrevious}
+          className="nav-button"
+        >
+          Previous
+        </button>
+        <button
+          onClick={onNext}
+          disabled={!hasNext}
+          className="nav-button"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
