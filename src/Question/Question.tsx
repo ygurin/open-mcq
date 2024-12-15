@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import Modal from './../Modal/Modal';
 import './Question.css';
+import QuestionNav from './QuestionNav';
 
 interface QuestionProps {
   mode: 'practice' | 'test';
@@ -22,6 +23,14 @@ interface QuestionProps {
   isAnswered: boolean;
   selectedAnswer: string | undefined;
   onQuit: () => void;
+  // Add these new props to the interface
+  currentQuestionIndex: number;
+  totalQuestions: number;
+  onQuestionSelect: (index: number) => void;
+  answeredQuestions: {
+    isAnswered: boolean;
+    isCorrect: boolean;
+  }[];
 }
 
 const Question: FC<QuestionProps> = ({
@@ -38,12 +47,17 @@ const Question: FC<QuestionProps> = ({
   onPrevious,
   hasPrevious,
   hasNext,
-  onAnswerSubmit,
   onAnswerSelect,
+  onAnswerSubmit,
   isCorrect,
   isAnswered,
   selectedAnswer,
-  onQuit
+  onQuit,
+  // Add these new props in the destructuring
+  currentQuestionIndex,
+  totalQuestions,
+  onQuestionSelect,
+  answeredQuestions
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -74,6 +88,16 @@ const Question: FC<QuestionProps> = ({
   return (
     <div className="Question">
       <h2 className="question-header">{heading}</h2>
+      <QuestionNav
+        currentQuestion={currentQuestionIndex}
+        totalQuestions={totalQuestions}
+        onQuestionSelect={onQuestionSelect}
+        onNext={onNext}
+        onPrevious={onPrevious}
+        hasNext={hasNext}
+        hasPrevious={hasPrevious}
+        answeredQuestions={answeredQuestions}
+      />
       <div className="question-text-container">
         <p className="question-text">{ques}</p>
       </div>

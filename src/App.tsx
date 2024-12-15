@@ -3,7 +3,6 @@ import './App.css';
 
 import Data from './data.json';
 import CategoryButton from './CategoryButton/CategoryButton';
-import QuestionButton from './QuestionButton/QuestionButton';
 import Question from './Question/Question';
 import ModeSelection from './ModeSelection/ModeSelection';
 
@@ -350,7 +349,6 @@ class App extends Component<object, AppState> {
       console.log('Question list:', questionList);
     }
 
-    let questionButtons = null;
     let questionView = null;
 
     if (selectedCategory && questionList && questionList.length > 0) {
@@ -360,35 +358,6 @@ class App extends Component<object, AppState> {
       );
 
       console.log('Current question index:', currentIndex);
-
-      // Question Buttons
-      questionButtons = (
-        <div className="question-navigation">
-          {mode === 'test' && (
-            <div className="test-progress">
-              Questions answered: {Object.keys(this.state.answeredQuestions).length} / {questionList.length}
-            </div>
-          )}
-          <div className="question-buttons">
-            {questionList.map((_, index) => {
-              const answerState = this.isQuestionAnswered(
-                selectedCategory,
-                String(index)
-              );
-              return (
-                <QuestionButton
-                  key={index}
-                  number={index}
-                  isSelected={String(index) === String(currentIndex)}
-                  getQuestion={this.questionClickHandler}
-                  isAnswered={answerState?.isAnswered}
-                  isCorrect={answerState?.isCorrect}
-                />
-              );
-            })}
-          </div>
-        </div>
-      );
 
       // Get current question with safety checks
       const currentQuestion = questionList[currentIndex];
@@ -422,6 +391,16 @@ class App extends Component<object, AppState> {
               isAnswered={answerState?.isAnswered ?? false}
               selectedAnswer={answerState?.selectedAnswer}
               onQuit={this.handleQuit}
+              currentQuestionIndex={currentIndex}
+              totalQuestions={questionList.length}
+              onQuestionSelect={(index) => this.setState({ selectedQuestion: String(index) })}
+              answeredQuestions={questionList.map((_, index) => {
+                const state = this.isQuestionAnswered(selectedCategory, String(index));
+                return {
+                  isAnswered: state?.isAnswered ?? false,
+                  isCorrect: state?.isCorrect ?? false
+                };
+              })}
             />
           </div>
         );
@@ -439,7 +418,6 @@ class App extends Component<object, AppState> {
           {mode === 'practice' ? 'Practice Mode' : 'Test Mode'}
         </div>
         {categories}
-        {questionButtons}
         {questionView}
       </div>
     );
