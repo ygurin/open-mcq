@@ -28,16 +28,17 @@
 
 .open-selector-button {
   padding: 0.5rem 1rem;
-  border: 1px solid #dee2e6;
+  border: none;
   border-radius: 0.25rem;
-  background-color: white;
+  background-color: #007bff;
   cursor: pointer;
-  color: #007bff;
+  color: white;
   font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .open-selector-button:hover {
-  background-color: #f8f9fa;
+  background-color: #0056b3;
 }
 
 .question-nav {
