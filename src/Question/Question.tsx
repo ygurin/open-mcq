@@ -161,14 +161,6 @@ const Question: FC<QuestionProps> = ({
         </button>
       </div>
       <div className="answer-section">
-        {mode === 'practice' && !isAnswered && !showAnswer && (
-          <button 
-            className="get-answer-button"
-            onClick={() => setShowAnswer(true)}
-          >
-            Get Answer
-          </button>
-        )}
         <button 
           className="answer-button"
           onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
@@ -218,15 +210,25 @@ const Question: FC<QuestionProps> = ({
         >
           Next
         </button>
-        {mode === 'practice' && (
-          <button 
-            onClick={handleFinish}
-            disabled={!areAllQuestionsAnswered}
-            className="nav-button finish-button"
-          >
-            Finish
-          </button>
-        )}
+        <div className="right-buttons">
+          {mode === 'practice' && !isAnswered && !showAnswer && (
+            <button 
+              onClick={() => setShowAnswer(true)}
+              className="nav-button get-answer-button"
+            >
+              Get Answer
+            </button>
+          )}
+          {mode === 'practice' && (
+            <button 
+              onClick={handleFinish}
+              disabled={!areAllQuestionsAnswered}
+              className="nav-button finish-button"
+            >
+              Finish
+            </button>
+          )}
+        </div>
       </div>
       <Modal 
         isOpen={isModalOpen}
