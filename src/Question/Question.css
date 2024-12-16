@@ -60,7 +60,7 @@
 .question-image {
   width: 100%;
   height: 100%;
-  object-fit: fill; /* Changed from 'contain' to 'fill' to stretch the image */
+  object-fit: fill;
   transition: opacity 0.3s ease-in-out;
 }
 
@@ -236,4 +236,10 @@
   margin: 0;
   line-height: 1.5;
   color: #212529;
+}
+
+.option-button.show-correct {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
 }

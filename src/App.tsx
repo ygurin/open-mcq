@@ -133,7 +133,7 @@ class App extends Component<object, AppState> {
   getImage = (path: string) => {
     try {
       return path.split('/').pop() || "";
-    } catch (e) {
+    } catch {
       return "";
     }
   };
@@ -346,7 +346,6 @@ class App extends Component<object, AppState> {
       );
     } else {
       questionList = this.getQuestions(selectedCategory);
-      console.log('Question list:', questionList);
     }
 
     let questionView = null;
@@ -357,11 +356,8 @@ class App extends Component<object, AppState> {
         questionList.length - 1
       );
 
-      console.log('Current question index:', currentIndex);
-
       // Get current question with safety checks
       const currentQuestion = questionList[currentIndex];
-      console.log('Current question:', currentQuestion);
 
       if (currentQuestion) {
         const answerState = this.isQuestionAnswered(
@@ -401,6 +397,7 @@ class App extends Component<object, AppState> {
                   isCorrect: state?.isCorrect ?? false
                 };
               })}
+              correctAnswer={currentQuestion.answer}
             />
           </div>
         );

@@ -23,10 +23,10 @@ interface QuestionProps {
   isAnswered: boolean;
   selectedAnswer: string | undefined;
   onQuit: () => void;
-  // Add these new props to the interface
   currentQuestionIndex: number;
   totalQuestions: number;
   onQuestionSelect: (index: number) => void;
+  correctAnswer: string;
   answeredQuestions: {
     isAnswered: boolean;
     isCorrect: boolean;
@@ -53,11 +53,11 @@ const Question: FC<QuestionProps> = ({
   isAnswered,
   selectedAnswer,
   onQuit,
-  // Add these new props in the destructuring
   currentQuestionIndex,
   totalQuestions,
   onQuestionSelect,
-  answeredQuestions
+  answeredQuestions,
+  correctAnswer
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -74,6 +74,10 @@ const Question: FC<QuestionProps> = ({
     if (isAnswered) {
       if (selectedAnswer === answer) {
         return `option-button ${isCorrect ? 'correct' : 'incorrect'}`;
+      }
+      // Use correctAnswer instead of currentQuestion.answer
+      if (!isCorrect && mode === 'practice' && answer === correctAnswer) {
+        return 'option-button show-correct';
       }
       return 'option-button';
     }
