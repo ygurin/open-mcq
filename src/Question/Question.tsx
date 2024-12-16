@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import Modal from './../Modal/Modal';
 import './Question.css';
 import QuestionNav from './QuestionNav';
@@ -61,6 +61,7 @@ const Question: FC<QuestionProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
+  const [showAnswer, setShowAnswer] = useState(false);
 
   const handleQuit = () => {
     setIsModalOpen(true);
@@ -80,15 +81,18 @@ const Question: FC<QuestionProps> = ({
     onQuit();
   };
 
+  useEffect(() => {
+    setShowAnswer(false);
+  }, [currentQuestionIndex]);
+
   const areAllQuestionsAnswered = answeredQuestions.every(q => q.isAnswered);
 
   const getButtonStyle = (answer: string) => {
-    if (isAnswered) {
+    if (isAnswered || (mode === 'practice' && showAnswer)) {
       if (selectedAnswer === answer) {
         return `option-button ${isCorrect ? 'correct' : 'incorrect'}`;
       }
-      // Use correctAnswer instead of currentQuestion.answer
-      if (!isCorrect && mode === 'practice' && answer === correctAnswer) {
+      if ((!isCorrect || showAnswer) && mode === 'practice' && answer === correctAnswer) {
         return 'option-button show-correct';
       }
       return 'option-button';
@@ -157,6 +161,14 @@ const Question: FC<QuestionProps> = ({
         </button>
       </div>
       <div className="answer-section">
+        {mode === 'practice' && !isAnswered && !showAnswer && (
+          <button 
+            className="get-answer-button"
+            onClick={() => setShowAnswer(true)}
+          >
+            Get Answer
+          </button>
+        )}
         <button 
           className="answer-button"
           onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
@@ -164,12 +176,19 @@ const Question: FC<QuestionProps> = ({
         >
           {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
         </button>
-        {isAnswered && (
+        {(isAnswered || showAnswer) && (
           <div className="feedback-section">
-            <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
-              {isCorrect ? 'Correct!' : 'Incorrect!'}
-            </p>
-            {mode === 'practice' && explanation && !isCorrect && (
+            {isAnswered && (
+              <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
+                {isCorrect ? 'Correct!' : 'Incorrect!'}
+              </p>
+            )}
+            {showAnswer && !isAnswered && (
+              <p className="answer-feedback">
+                The correct answer is: <span className="correct">{correctAnswer}</span>
+              </p>
+            )}
+            {mode === 'practice' && explanation && (showAnswer || !isCorrect) && (
               <div className="explanation">
                 <h4>Explanation:</h4>
                 <p>{explanation}</p>
