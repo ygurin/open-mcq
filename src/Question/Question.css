@@ -116,6 +116,21 @@
   background-color: #c82333 !important;
 }
 
+.finish-button {
+  position: absolute;
+  right: 0;
+  background-color: #28a745;
+}
+
+.finish-button:hover:not(:disabled) {
+  background-color: #218838 !important;
+}
+
+.finish-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
 .nav-button {
   padding: 8px 16px;
   background-color: #007bff;

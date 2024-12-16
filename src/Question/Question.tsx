@@ -60,15 +60,27 @@ const Question: FC<QuestionProps> = ({
   correctAnswer
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
 
   const handleQuit = () => {
     setIsModalOpen(true);
+  };
+
+  const handleFinish = () => {
+    setIsFinishModalOpen(true);
   };
 
   const handleConfirmQuit = () => {
     setIsModalOpen(false);
     onQuit();
   };
+
+  const handleConfirmFinish = () => {
+    setIsFinishModalOpen(false);
+    onQuit();
+  };
+
+  const areAllQuestionsAnswered = answeredQuestions.every(q => q.isAnswered);
 
   const getButtonStyle = (answer: string) => {
     if (isAnswered) {
@@ -187,12 +199,27 @@ const Question: FC<QuestionProps> = ({
         >
           Next
         </button>
+        {mode === 'practice' && (
+          <button 
+            onClick={handleFinish}
+            disabled={!areAllQuestionsAnswered}
+            className="nav-button finish-button"
+          >
+            Finish
+          </button>
+        )}
       </div>
       <Modal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmQuit}
         message={mode === 'test' ? 'Are you sure you want to finish the test?' : 'Are you sure you want to quit to the menu?'}
+      />
+       <Modal 
+        isOpen={isFinishModalOpen}
+        onClose={() => setIsFinishModalOpen(false)}
+        onConfirm={handleConfirmFinish}
+        message="Are you sure you want to finish the practice session?"
       />
     </div>
   );
