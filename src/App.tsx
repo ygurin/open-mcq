@@ -5,6 +5,7 @@ import Data from './data.json';
 import CategoryButton from './CategoryButton/CategoryButton';
 import Question from './Question/Question';
 import ModeSelection from './ModeSelection/ModeSelection';
+import TestResults from './TestResults/TestResults';
 
 interface Item {
   question: string;
@@ -233,43 +234,12 @@ class App extends Component<object, AppState> {
   };
 
   renderResults = () => {
-    const { testResults } = this.state;
-    let totalCorrect = 0;
-    let totalQuestions = 0;
-  
-    Object.values(testResults).forEach(result => {
-      totalCorrect += result.correctAnswers;
-      totalQuestions += result.totalQuestions;
-    });
-  
     return (
-      <div className="test-results">
-        <h2>Test Results</h2>
-        <h3>Overall Score: {totalCorrect} out of {totalQuestions}</h3>
-        {Object.entries(testResults).map(([category, result]) => (
-          <div key={category} className="category-result">
-            <h4>{category}</h4>
-            <p>Score: {result.correctAnswers} out of {result.totalQuestions}</p>
-            {result.wrongAnswers.length > 0 && (
-              <div className="wrong-answers-section">
-                <p>Incorrect Questions: {result.wrongAnswers.length}</p>
-                <button 
-                  onClick={() => this.reviewWrongAnswers(category, result.wrongAnswers)}
-                  className="review-button"
-                >
-                  Review Wrong Answers
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-        <button 
-          onClick={this.handleRestartTest}
-          className="restart-button"
-        >
-          Start New Test
-        </button>
-      </div>
+      <TestResults
+        results={this.state.testResults}
+        onReviewWrongAnswers={this.reviewWrongAnswers}
+        onRestartTest={this.handleRestartTest}
+      />
     );
   };
 

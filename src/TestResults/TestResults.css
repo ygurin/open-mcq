@@ -1,0 +1,77 @@
+.test-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.test-results h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.test-results h3 {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+}
+
+.category-result {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.category-result h4 {
+  color: #444;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.wrong-answers-section {
+  margin-top: 1rem;
+}
+
+.wrong-answers-section p {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.review-button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.review-button:hover {
+  background-color: #357abd;
+}
+
+.restart-button {
+  margin-top: 2rem;
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.restart-button:hover {
+  background-color: #449d44;
+}
