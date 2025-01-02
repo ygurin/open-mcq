@@ -29,6 +29,7 @@ interface TestResults {
     totalQuestions: number;
     correctAnswers: number;
     wrongAnswers: string[];
+    availableQuestions: number;
   };
 }
 
@@ -167,7 +168,6 @@ class App extends Component<object, AppState> {
       const questionKey = `${this.state.selectedCategory}-${this.state.selectedQuestion}`;
       
       this.setState(prevState => {
-        // Update answered questions
         const newAnsweredQuestions = {
           ...prevState.answeredQuestions,
           [questionKey]: {
@@ -177,32 +177,35 @@ class App extends Component<object, AppState> {
           }
         };
 
-        // Update test results if in test mode
         let newTestResults = { ...prevState.testResults };
         if (this.state.mode === 'test') {
+          const categoryQuestions = this.getQuestions(this.state.selectedCategory!);
           const categoryResults = prevState.testResults[this.state.selectedCategory!] || {
             totalQuestions: 0,
             correctAnswers: 0,
-            wrongAnswers: []
+            wrongAnswers: [],
+            availableQuestions: categoryQuestions.length
           };
 
           newTestResults = {
             ...newTestResults,
             [this.state.selectedCategory!]: {
+              ...categoryResults,
               totalQuestions: categoryResults.totalQuestions + 1,
               correctAnswers: categoryResults.correctAnswers + (isCorrect ? 1 : 0),
               wrongAnswers: isCorrect 
                 ? categoryResults.wrongAnswers 
-                : [...categoryResults.wrongAnswers, currentQuestion.id]
+                : [...categoryResults.wrongAnswers, currentQuestion.id],
+              availableQuestions: categoryQuestions.length
             }
           };
-        }
+          }
 
-        return {
-          answeredQuestions: newAnsweredQuestions,
-          testResults: newTestResults
-        };
-      });
+          return {
+            answeredQuestions: newAnsweredQuestions,
+            testResults: newTestResults
+          };
+        });
     }
   };
 
