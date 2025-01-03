@@ -4,6 +4,13 @@
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+@media screen and (max-width: 600px) {
+  .App {
+    padding: 10px;
+  }
 }
 
 .wrong-answers-section {
