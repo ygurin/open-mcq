@@ -2,6 +2,7 @@ import { FC, useState, useEffect } from 'react';
 import Modal from './../Modal/Modal';
 import './Question.css';
 import QuestionNav from './QuestionNav';
+import { ShuffledQuestion, shuffleQuestionOptions } from '../utils/shuffle';
 
 interface QuestionProps {
   mode: 'practice' | 'test';
@@ -62,6 +63,10 @@ const Question: FC<QuestionProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [shuffledOptions, setShuffledOptions] = useState<ShuffledQuestion>({ 
+    options: [q1, q2, q3, q4],
+    correctAnswerIndex: 0
+});
 
   const handleQuit = () => {
     setIsModalOpen(true);
@@ -82,8 +87,11 @@ const Question: FC<QuestionProps> = ({
   };
 
   useEffect(() => {
+    const options = [q1, q2, q3, q4];
+    const shuffled = shuffleQuestionOptions(options, correctAnswer);
+    setShuffledOptions(shuffled);
     setShowAnswer(false);
-  }, [currentQuestionIndex]);
+}, [currentQuestionIndex, q1, q2, q3, q4, correctAnswer]);
 
   const areAllQuestionsAnswered = answeredQuestions.every(q => q.isAnswered);
 
@@ -122,72 +130,54 @@ const Question: FC<QuestionProps> = ({
         <p className="question-text">{ques}</p>
       </div>
       {image && (
-        <div className="image-container">
-          <img
-            className="question-image"
-            src={`/images/${image}`}
-            alt="Question illustration"
-          />
-        </div>
+          <div className="image-container">
+              <img
+                  className="question-image"
+                  src={`/images/${image}`}
+                  alt="Question illustration"
+              />
+          </div>
       )}
       <div className="question-options">
-        <button 
-          className={getButtonStyle(q1)}
-          onClick={() => onAnswerSelect(q1)}
-          disabled={isAnswered}
-        >
-          {q1}
-        </button>
-        <button 
-          className={getButtonStyle(q2)}
-          onClick={() => onAnswerSelect(q2)}
-          disabled={isAnswered}
-        >
-          {q2}
-        </button>
-        <button 
-          className={getButtonStyle(q3)}
-          onClick={() => onAnswerSelect(q3)}
-          disabled={isAnswered}
-        >
-          {q3}
-        </button>
-        <button 
-          className={getButtonStyle(q4)}
-          onClick={() => onAnswerSelect(q4)}
-          disabled={isAnswered}
-        >
-          {q4}
-        </button>
+          {shuffledOptions.options.map((option, index) => (
+              <button 
+                  key={index}
+                  className={getButtonStyle(option)}
+                  onClick={() => onAnswerSelect(option)}
+                  disabled={isAnswered}
+              >
+                  {option}
+              </button>
+          ))}
       </div>
       <div className="answer-section">
-        <button 
-          className="answer-button"
-          onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
-          disabled={!selectedAnswer || isAnswered}
-        >
-          {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
-        </button>
-        {(isAnswered || showAnswer) && (
-          <div className="feedback-section">
-            {isAnswered && (
-              <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
-                {isCorrect ? 'Correct!' : 'Incorrect!'}
-              </p>
-            )}
-            {showAnswer && !isAnswered && (
-              <p className="answer-feedback">
-                The correct answer is: <span className="correct">{correctAnswer}</span>
-              </p>
-            )}
-            {mode === 'practice' && explanation && (showAnswer || !isCorrect) && (
-              <div className="explanation">
-                <h4>Explanation:</h4>
-                <p>{explanation}</p>
+          <button 
+              className="answer-button"
+              onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
+              disabled={!selectedAnswer || isAnswered}
+          >
+              {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
+          </button>
+          {(isAnswered || showAnswer) && (
+              <div className="feedback-section">
+                  {isAnswered && (
+                      <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
+                          {isCorrect ? 'Correct!' : 'Incorrect!'}
+                      </p>
+                  )}
+                  {showAnswer && !isAnswered && (
+                      <p className="answer-feedback">
+                          The correct answer is: <span className="correct">{correctAnswer}</span>
+                      </p>
+                  )}
+                  {mode === 'practice' && explanation && (showAnswer || !isCorrect) && (
+                      <div className="explanation">
+                          <h4>Explanation:</h4>
+                          <p>{explanation}</p>
+                      </div>
+                  )}
               </div>
-            )}
-          </div>
-        )}
+          )}
       </div>
       <div className="navigation-buttons">
         <button 
