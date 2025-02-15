@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import './App.css';
 
 import Data from './data.json';
-import CategoryButton from './CategoryButton/CategoryButton';
+import CategoryButton from './components/CategoryButton/CategoryButton';
 import Question from './Question/Question';
-import ModeSelection from './ModeSelection/ModeSelection';
-import TestResults from './TestResults/TestResults';
+import ModeSelection from './components/ModeSelection/ModeSelection';
+import TestResults from './components/TestResults/TestResults';
 
 interface Item {
   question: string;
