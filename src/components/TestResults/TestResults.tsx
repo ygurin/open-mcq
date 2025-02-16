@@ -71,7 +71,7 @@ const TestResults: React.FC<TestResultsProps> = ({
             onClick={onRestartTest}
             className="restart-button"
           >
-            Start New Test
+            Exit to Menu
           </button>
         </div>
       </div>
