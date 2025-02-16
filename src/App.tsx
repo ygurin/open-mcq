@@ -70,7 +70,12 @@ class App extends Component<object, AppState> {
     if (mode === 'exam') {
       this.initializeExamMode();
     } else {
-      this.setState({ mode });
+      this.setState({
+        mode,
+        showResults: false,
+        answeredQuestions: {},
+        testResults: {}
+      });
     }
   };
 
