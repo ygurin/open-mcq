@@ -5,7 +5,7 @@ import QuestionNav from './QuestionNav';
 import { ShuffledQuestion, shuffleQuestionOptions } from '../utils/shuffle';
 
 interface QuestionProps {
-  mode: 'practice' | 'test';
+  mode: 'practice' | 'category-test' | 'exam';
   heading: string;
   ques: string;
   image?: string;
@@ -184,7 +184,7 @@ const Question: FC<QuestionProps> = ({
           onClick={handleQuit}
           className="nav-button quit-button"
         >
-          {mode === 'test' ? 'Finish Test' : 'Quit'}
+          {mode === 'practice' ? 'Quit' : 'Finish Test'}
         </button>
         <button 
           onClick={onPrevious}
@@ -224,7 +224,13 @@ const Question: FC<QuestionProps> = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmQuit}
-        message={mode === 'test' ? 'Are you sure you want to finish the test?' : 'Are you sure you want to quit to the menu?'}
+        message={
+          mode === 'practice' 
+            ? 'Are you sure you want to quit to the menu?' 
+            : mode === 'exam'
+              ? 'Are you sure you want to finish the exam?'
+              : 'Are you sure you want to finish the test?'
+        }
       />
        <Modal 
         isOpen={isFinishModalOpen}

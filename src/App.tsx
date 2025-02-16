@@ -6,6 +6,9 @@ import CategoryButton from './components/CategoryButton/CategoryButton';
 import Question from './Question/Question';
 import ModeSelection from './components/ModeSelection/ModeSelection';
 import TestResults from './components/TestResults/TestResults';
+import { shuffleArray } from './utils/shuffle';
+import ExamTimer from './components/ExamTimer/ExamTimer';
+import ExamResults from './components/ExamResults/ExamResults';
 
 interface Item {
   question: string;
@@ -33,13 +36,23 @@ interface TestResults {
   };
 }
 
+interface ExamState {
+  questions: Item[];
+  currentQuestionIndex: number;
+  timeRemaining: number;
+  isComplete: boolean;
+  startTime?: number;
+}
+
+
 interface AppState {
-  mode: 'practice' | 'test' | null;
+  mode: 'practice' | 'category-test' | 'exam' | null;
   selectedCategory: string | null;
   selectedQuestion: string;
   answeredQuestions: { [key: string]: AnswerState };
   testResults: TestResults;
   showResults: boolean;
+  exam: ExamState | null;
 }
 
 class App extends Component<object, AppState> {
@@ -49,11 +62,76 @@ class App extends Component<object, AppState> {
     selectedQuestion: "0",
     answeredQuestions: {},
     testResults: {},
-    showResults: false
+    showResults: false,
+    exam: null
   };
 
-  handleModeSelect = (mode: 'practice' | 'test') => {
-    this.setState({ mode });
+  handleModeSelect = (mode: 'practice' | 'category-test' | 'exam') => {
+    if (mode === 'exam') {
+      this.initializeExamMode();
+    } else {
+      this.setState({ mode });
+    }
+  };
+
+  initializeExamMode = () => {
+    // Get all questions from all categories
+    const allQuestions: Item[] = [...Data];
+    
+    const shuffledQuestions = shuffleArray(allQuestions).slice(0, 40);
+    
+    this.setState({
+      mode: 'exam',
+      exam: {
+        questions: shuffledQuestions,
+        currentQuestionIndex: 0,
+        timeRemaining: 45 * 60, // 45 minutes in seconds
+        isComplete: false,
+        startTime: Date.now()
+      }
+    });
+  };
+
+  handleExamTimeUp = () => {
+    if (this.state.exam) {
+      this.setState(prevState => ({
+        exam: {
+          ...prevState.exam!,
+          isComplete: true
+        },
+        showResults: true
+      }));
+    }
+  };
+
+  calculateExamResults = () => {
+    if (!this.state.exam) return null;
+
+    const correctAnswers = Object.values(this.state.answeredQuestions).reduce(
+      (count, answer) => count + (answer.isCorrect ? 1 : 0),
+      0
+    );
+
+    const timeTaken = this.state.exam.startTime
+      ? Math.floor((Date.now() - this.state.exam.startTime) / 1000)
+      : 45 * 60;
+
+    return {
+      correctAnswers,
+      totalQuestions: 40,
+      timeTaken
+    };
+  };
+
+  handleExamQuestionChange = (index: number) => {
+    if (this.state.exam) {
+      this.setState(prevState => ({
+        exam: {
+          ...prevState.exam!,
+          currentQuestionIndex: index
+        }
+      }));
+    }
   };
 
   handleExit = () => {
@@ -116,7 +194,12 @@ class App extends Component<object, AppState> {
   };
 
   handleNext = () => {
-    if (this.state.selectedCategory) {
+    if (this.state.mode === 'exam' && this.state.exam) {
+      const nextIndex = this.state.exam.currentQuestionIndex + 1;
+      if (nextIndex < 40) {
+        this.handleExamQuestionChange(nextIndex);
+      }
+    } else if (this.state.selectedCategory) {
       const questions = this.getQuestions(this.state.selectedCategory);
       const currentIndex = Number(this.state.selectedQuestion);
       if (currentIndex < questions.length - 1) {
@@ -126,9 +209,16 @@ class App extends Component<object, AppState> {
   };
 
   handlePrevious = () => {
-    const currentIndex = Number(this.state.selectedQuestion);
-    if (currentIndex > 0) {
-      this.setState({ selectedQuestion: String(currentIndex - 1) });
+    if (this.state.mode === 'exam' && this.state.exam) {
+      const prevIndex = this.state.exam.currentQuestionIndex - 1;
+      if (prevIndex >= 0) {
+        this.handleExamQuestionChange(prevIndex);
+      }
+    } else {
+      const currentIndex = Number(this.state.selectedQuestion);
+      if (currentIndex > 0) {
+        this.setState({ selectedQuestion: String(currentIndex - 1) });
+      }
     }
   };
 
@@ -141,7 +231,22 @@ class App extends Component<object, AppState> {
   };
 
   handleAnswerSelection = (selectedAnswer: string) => {
-    if (this.state.selectedCategory) {
+    if (this.state.mode === 'exam' && this.state.exam) {
+      const questionKey = `exam-${this.state.exam.currentQuestionIndex}`;
+      const existingState = this.state.answeredQuestions[questionKey];
+      
+      if (!existingState?.isAnswered) {
+        this.setState(prevState => ({
+          answeredQuestions: {
+            ...prevState.answeredQuestions,
+            [questionKey]: {
+              ...existingState,
+              selectedAnswer
+            }
+          }
+        }));
+      }
+    } else if (this.state.selectedCategory) {
       const questionKey = `${this.state.selectedCategory}-${this.state.selectedQuestion}`;
       const existingState = this.state.answeredQuestions[questionKey];
       
@@ -160,7 +265,28 @@ class App extends Component<object, AppState> {
   };
 
   handleAnswerSubmit = (selectedAnswer: string) => {
-    if (this.state.selectedCategory) {
+    if (this.state.mode === 'exam' && this.state.exam) {
+      const currentQuestion = this.state.exam.questions[this.state.exam.currentQuestionIndex];
+      const isCorrect = selectedAnswer === currentQuestion.answer;
+      
+      const questionKey = `exam-${this.state.exam.currentQuestionIndex}`;
+      
+      this.setState(prevState => ({
+        answeredQuestions: {
+          ...prevState.answeredQuestions,
+          [questionKey]: {
+            isAnswered: true,
+            isCorrect,
+            selectedAnswer
+          }
+        }
+      }));
+
+      // Auto-advance to next question in exam mode if not the last question
+      if (this.state.exam.currentQuestionIndex < 39) {
+        this.handleNext();
+      }
+    } else if (this.state.selectedCategory) {
       const questions = this.getQuestions(this.state.selectedCategory);
       const currentQuestion = questions[Number(this.state.selectedQuestion)];
       const isCorrect = selectedAnswer === currentQuestion.answer;
@@ -178,7 +304,7 @@ class App extends Component<object, AppState> {
         };
 
         let newTestResults = { ...prevState.testResults };
-        if (this.state.mode === 'test') {
+        if (this.state.mode === 'category-test') {
           const categoryQuestions = this.getQuestions(this.state.selectedCategory!);
           const categoryResults = prevState.testResults[this.state.selectedCategory!] || {
             totalQuestions: 0,
@@ -199,13 +325,13 @@ class App extends Component<object, AppState> {
               availableQuestions: categoryQuestions.length
             }
           };
-          }
+        }
 
-          return {
-            answeredQuestions: newAnsweredQuestions,
-            testResults: newTestResults
-          };
-        });
+        return {
+          answeredQuestions: newAnsweredQuestions,
+          testResults: newTestResults
+        };
+      });
     }
   };
 
@@ -215,7 +341,15 @@ class App extends Component<object, AppState> {
   };
 
   handleQuit = () => {
-    if (this.state.mode === 'test') {
+    if (this.state.mode === 'exam') {
+      this.setState(prevState => ({
+        exam: {
+          ...prevState.exam!,
+          isComplete: true
+        },
+        showResults: true
+      }));
+    } else if (this.state.mode === 'category-test') {
       this.setState({ showResults: true });
     } else {
       this.setState({
@@ -232,11 +366,97 @@ class App extends Component<object, AppState> {
       selectedQuestion: "0",
       answeredQuestions: {},
       testResults: {},
-      showResults: false
+      showResults: false,
+      exam: null
     });
   };
 
+  handleBackToModeSelection = () => {
+    this.setState({
+      mode: null,
+      selectedCategory: null,
+      selectedQuestion: "0",
+      answeredQuestions: {},
+      testResults: {},
+      exam: null
+    });
+  };
+
+  renderExamMode = () => {
+    if (!this.state.exam) return null;
+
+    const { questions, currentQuestionIndex, isComplete } = this.state.exam;
+    const currentQuestion = questions[currentQuestionIndex];
+    const questionKey = `exam-${currentQuestionIndex}`;
+    const answerState = this.state.answeredQuestions[questionKey];
+
+    if (isComplete || this.state.showResults) {
+      return this.renderResults();
+    }
+
+    return (
+      <div className="exam-mode-container">
+        <ExamTimer
+          onTimeUp={this.handleExamTimeUp}
+          totalMinutes={45}
+        />
+        <Question
+          mode="exam"
+          heading={currentQuestion.heading}
+          ques={currentQuestion.question}
+          image={this.getImage(currentQuestion.image ?? '')}
+          q1={currentQuestion.questions[0]}
+          q2={currentQuestion.questions[1]}
+          q3={currentQuestion.questions[2]}
+          q4={currentQuestion.questions[3]}
+          explanation={undefined}
+          onNext={this.handleNext}
+          onPrevious={this.handlePrevious}
+          hasNext={currentQuestionIndex < 39}
+          hasPrevious={currentQuestionIndex > 0}
+          onAnswerSelect={this.handleAnswerSelection}
+          onAnswerSubmit={this.handleAnswerSubmit}
+          isCorrect={answerState?.isCorrect ?? null}
+          isAnswered={answerState?.isAnswered ?? false}
+          selectedAnswer={answerState?.selectedAnswer}
+          onQuit={this.handleQuit}
+          currentQuestionIndex={currentQuestionIndex}
+          totalQuestions={40}
+          onQuestionSelect={(index) => this.setState(prevState => ({
+            exam: {
+              ...prevState.exam!,
+              currentQuestionIndex: index
+            }
+          }))}
+          answeredQuestions={questions.map((_, index) => {
+            const state = this.state.answeredQuestions[`exam-${index}`];
+            return {
+              isAnswered: state?.isAnswered ?? false,
+              isCorrect: state?.isCorrect ?? false
+            };
+          })}
+          correctAnswer={currentQuestion.answer}
+        />
+      </div>
+    );
+  };
+
   renderResults = () => {
+    if (this.state.mode === 'exam') {
+      const results = this.calculateExamResults();
+      if (!results) return null;
+
+      return (
+        <ExamResults
+          correctAnswers={results.correctAnswers}
+          totalQuestions={results.totalQuestions}
+          timeTaken={results.timeTaken}
+          onRetry={() => this.initializeExamMode()}
+          onBackToMenu={this.handleBackToModeSelection}
+        />
+      );
+    }
+
     return (
       <TestResults
         results={this.state.testResults}
@@ -247,7 +467,6 @@ class App extends Component<object, AppState> {
   };
 
   reviewWrongAnswers = (category: string, wrongAnswers: string[]) => {
-    // Find the index of the first wrong answer in the current category
     const questions = this.getQuestions(category);
     const firstWrongQuestionIndex = questions.findIndex(q => wrongAnswers.includes(q.id));
     
@@ -258,25 +477,26 @@ class App extends Component<object, AppState> {
     });
   };
 
-  handleBackToModeSelection = () => {
-    this.setState({
-      mode: null,
-      selectedCategory: null,
-      selectedQuestion: "0",
-      answeredQuestions: {},
-      testResults: {}
-    });
-  };
-
   render() {
     const { mode, selectedCategory, showResults } = this.state;
 
-    if (showResults) {
-      return this.renderResults();
-    }
-
     if (!mode) {
       return <ModeSelection onSelectMode={this.handleModeSelect} />;
+    }
+
+    if (mode === 'exam') {
+      return (
+        <div className="App exam-mode">
+          <div className="mode-indicator exam">
+            Exam Mode
+          </div>
+          {this.renderExamMode()}
+        </div>
+      );
+    }
+
+    if (showResults) {
+      return this.renderResults();
     }
 
     const categoryList = this.getCategories();
@@ -287,14 +507,14 @@ class App extends Component<object, AppState> {
       categories = (
         <div>
           <h2>Select a Category</h2>
-          {mode === 'test' && (
+          {mode === 'category-test' && (
             <p className="test-mode-info">
-              Test Mode: Your answers will be scored and you'll receive a final result
+              Category Test Mode: Your answers will be scored and you'll receive a final result
             </p>
           )}
           <div className="category-list">
             {categoryList.map(categ => {
-              const categoryProgress = mode === 'test' && this.state.testResults[categ] 
+              const categoryProgress = mode === 'category-test' && this.state.testResults[categ] 
                 ? `(${this.state.testResults[categ].correctAnswers}/${this.state.testResults[categ].totalQuestions})`
                 : '';
               
@@ -329,7 +549,6 @@ class App extends Component<object, AppState> {
         questionList.length - 1
       );
 
-      // Get current question with safety checks
       const currentQuestion = questionList[currentIndex];
 
       if (currentQuestion) {
@@ -377,7 +596,6 @@ class App extends Component<object, AppState> {
       }
     }
 
-    // Debug information for when no question is shown
     if (selectedCategory && (!questionList || questionList.length === 0)) {
       console.error('No questions available for category:', selectedCategory);
     }
@@ -385,7 +603,7 @@ class App extends Component<object, AppState> {
     return (
       <div className={`App ${mode}-mode`}>
         <div className="mode-indicator">
-          {mode === 'practice' ? 'Practice Mode' : 'Test Mode'}
+          {mode === 'practice' ? 'Practice Mode' : 'Category Test Mode'}
         </div>
         {categories}
         {questionView}

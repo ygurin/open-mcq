@@ -1,23 +1,26 @@
-// src/ModeSelection/ModeSelection.tsx
 import { FC } from 'react';
 import './ModeSelection.css';
 
 interface ModeSelectionProps {
-  onSelectMode: (mode: 'practice' | 'test') => void;
+  onSelectMode: (mode: 'practice' | 'category-test' | 'exam') => void;
 }
 
 const ModeSelection: FC<ModeSelectionProps> = ({ onSelectMode }) => {
   return (
     <div className="mode-selection">
       <h2>Select Mode</h2>
-      <div className="mode-buttons">
+      <div className="mode-buttons-vertical">
         <button onClick={() => onSelectMode('practice')} className="mode-button practice">
           <h3>Practice Mode</h3>
           <p>Practice questions with instant feedback and explanations</p>
         </button>
-        <button onClick={() => onSelectMode('test')} className="mode-button test">
-          <h3>Test Mode</h3>
-          <p>Take a timed test and get scored on your performance</p>
+        <button onClick={() => onSelectMode('category-test')} className="mode-button category-test">
+          <h3>Category Test Mode</h3>
+          <p>Take a test in a specific category and get scored on your performance</p>
+        </button>
+        <button onClick={() => onSelectMode('exam')} className="mode-button exam">
+          <h3>Exam Mode</h3>
+          <p>45-minute timed exam with 40 random questions from all categories</p>
         </button>
       </div>
     </div>

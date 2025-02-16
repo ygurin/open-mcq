@@ -1,18 +1,19 @@
-/* src/ModeSelection/ModeSelection.css */
 .mode-selection {
   text-align: center;
   padding: 2rem;
 }
 
-.mode-buttons {
+.mode-buttons-vertical {
   display: flex;
-  justify-content: center;
-  gap: 2rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   margin-top: 2rem;
 }
 
 .mode-button {
-  width: 300px;
+  width: 100%;
+  max-width: 500px;
   padding: 2rem;
   border: none;
   border-radius: 8px;
@@ -36,17 +37,28 @@
 }
 
 .mode-button.practice {
-  background-color: #e3f2fd;
+  background-color: #e8f5e9;
+  border-left: 6px solid #4caf50;
 }
 
-.mode-button.test {
-  background-color: #fff3e0;
+.mode-button.category-test {
+  background-color: #fff8e1;
+  border-left: 6px solid #ffc107;
+}
+
+.mode-button.exam {
+  background-color: #ffebee;
+  border-left: 6px solid #f44336;
 }
 
 .mode-button.practice:hover {
-  background-color: #bbdefb;
+  background-color: #c8e6c9;
 }
 
-.mode-button.test:hover {
-  background-color: #ffe0b2;
+.mode-button.category-test:hover {
+  background-color: #ffecb3;
+}
+
+.mode-button.exam:hover {
+  background-color: #ffcdd2;
 }
