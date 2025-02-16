@@ -90,7 +90,7 @@ class App extends Component<object, AppState> {
       exam: {
         questions: shuffledQuestions,
         currentQuestionIndex: 0,
-        timeRemaining: 45 * 60, // 45 minutes in seconds
+        timeRemaining: 10, // Changed from 45 * 60 to 10 seconds
         isComplete: false,
         startTime: Date.now()
       }
@@ -383,6 +383,7 @@ class App extends Component<object, AppState> {
       selectedQuestion: "0",
       answeredQuestions: {},
       testResults: {},
+      showResults: false,
       exam: null
     });
   };
@@ -403,7 +404,7 @@ class App extends Component<object, AppState> {
       <div className="exam-mode-container">
         <ExamTimer
           onTimeUp={this.handleExamTimeUp}
-          totalMinutes={45}
+          totalMinutes={10/60}
         />
         <Question
           mode="exam"
@@ -456,7 +457,7 @@ class App extends Component<object, AppState> {
           correctAnswers={results.correctAnswers}
           totalQuestions={results.totalQuestions}
           timeTaken={results.timeTaken}
-          onRetry={() => this.initializeExamMode()}
+          //onRetry={() => this.initializeExamMode()}
           onBackToMenu={this.handleBackToModeSelection}
         />
       );

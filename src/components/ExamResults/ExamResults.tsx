@@ -5,15 +5,14 @@ interface ExamResultsProps {
   correctAnswers: number;
   totalQuestions: number;
   timeTaken: number;
-  onRetry: () => void;
   onBackToMenu: () => void;
+  onRetry?: () => void;  
 }
 
 const ExamResults: React.FC<ExamResultsProps> = ({
   correctAnswers,
   totalQuestions,
   timeTaken,
-  onRetry,
   onBackToMenu,
 }) => {
   const percentage = (correctAnswers / totalQuestions) * 100;
@@ -45,11 +44,8 @@ const ExamResults: React.FC<ExamResultsProps> = ({
       </div>
 
       <div className="result-actions">
-        <button className="retry-button" onClick={onRetry}>
-          Try Again
-        </button>
         <button className="menu-button" onClick={onBackToMenu}>
-          Back to Menu
+          Exit to Menu
         </button>
       </div>
     </div>
