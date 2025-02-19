@@ -135,6 +135,10 @@ const Question: FC<QuestionProps> = ({
                   className="question-image"
                   src={`/images/${image}`}
                   alt="Question illustration"
+                  onError={(e) => {
+                      console.error('Image failed to load:', image);
+                      e.currentTarget.style.display = 'none';
+                  }}
               />
           </div>
       )}
