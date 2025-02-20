@@ -100,24 +100,59 @@
 .navigation-buttons {
   margin-top: 20px;
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  position: relative;
-  padding: 0 220px; /* Increased from 100px to accommodate two buttons */
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
 }
 
-.right-buttons {
-  position: absolute;
-  right: 0;
+.button-group {
   display: flex;
+  justify-content: center;
   gap: 10px;
-  flex-direction: row;
+  width: 100%;
+  max-width: 400px;
+}
+
+.nav-button {
+  min-width: 120px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.answer-button {
+  width: 200px;
+  padding: 10px 24px;
+  background-color: #28a745;
+  margin-bottom: 10px;
 }
 
 .quit-button {
-  position: absolute;
-  left: 0;
   background-color: #dc3545;
+  margin-top: 10px;
+}
+
+.right-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+@media screen and (max-width: 480px) {
+  .button-group {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .nav-button {
+    width: 200px;
+  }
 }
 
 .quit-button:hover {
@@ -135,16 +170,6 @@
 .finish-button:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
-}
-
-.nav-button {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
 }
 
 .nav-button:disabled {
@@ -271,4 +296,20 @@
   background-color: #d4edda;
   color: #155724;
   border-color: #c3e6cb;
+}
+
+@keyframes flash {
+  0% {
+    background-color: #ffffff;
+  }
+  50% {
+    background-color: #ffd700;
+  }
+  100% {
+    background-color: #ffffff;
+  }
+}
+
+.option-button.hint-flash {
+  animation: flash 1s ease-in-out;
 }

@@ -67,6 +67,8 @@ const Question: FC<QuestionProps> = ({
     options: [q1, q2, q3, q4],
     correctAnswerIndex: 0
 });
+  const [hintedAnswer, setHintedAnswer] = useState<string | null>(null);
+  const [wasHintUsed, setWasHintUsed] = useState(false);
 
   const handleQuit = () => {
     setIsModalOpen(true);
@@ -96,21 +98,23 @@ const Question: FC<QuestionProps> = ({
   const areAllQuestionsAnswered = answeredQuestions.every(q => q.isAnswered);
 
   const getButtonStyle = (answer: string) => {
-    if (isAnswered || (mode === 'practice' && showAnswer)) {
-      if (selectedAnswer === answer) {
-        return `option-button ${isCorrect ? 'correct' : 'incorrect'}`;
-      }
-      if ((!isCorrect || showAnswer) && mode === 'practice' && answer === correctAnswer) {
-        return 'option-button show-correct';
-      }
-      return 'option-button';
+    let className = 'option-button';
+    
+    if (hintedAnswer === answer) {
+      className += ' hint-flash';
     }
     
-    if (selectedAnswer === answer) {
-      return 'option-button selected';
+    if (isAnswered) {
+      if (selectedAnswer === answer && isCorrect) {
+        className += ' correct';
+      } else if (selectedAnswer === answer && !isCorrect) {
+        className += ' incorrect';
+      }
+    } else if (selectedAnswer === answer) {
+      className += ' selected';
     }
     
-    return 'option-button';
+    return className;
   };
 
   return (
@@ -155,74 +159,88 @@ const Question: FC<QuestionProps> = ({
           ))}
       </div>
       <div className="answer-section">
-          <button 
-              className="answer-button"
-              onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
-              disabled={!selectedAnswer || isAnswered}
-          >
-              {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
-          </button>
-          {(isAnswered || showAnswer) && (
-              <div className="feedback-section">
-                  {isAnswered && (
-                      <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
-                          {isCorrect ? 'Correct!' : 'Incorrect!'}
-                      </p>
-                  )}
-                  {showAnswer && !isAnswered && (
-                      <p className="answer-feedback">
-                          The correct answer is: <span className="correct">{correctAnswer}</span>
-                      </p>
-                  )}
-                  {mode === 'practice' && explanation && (showAnswer || !isCorrect) && (
-                      <div className="explanation">
-                          <h4>Explanation:</h4>
-                          <p>{explanation}</p>
-                      </div>
-                  )}
+        {isAnswered && (
+          <div className="feedback-section">
+            <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
+              {isCorrect ? 'Correct!' : 'Incorrect!'}
+            </p>
+            {(!isCorrect || wasHintUsed) && explanation && (
+              <div className="explanation">
+                <h4>Explanation:</h4>
+                <p>{explanation}</p>
               </div>
-          )}
+            )}
+          </div>
+        )}
       </div>
       <div className="navigation-buttons">
+        <button 
+          className="answer-button"
+          onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
+          disabled={!selectedAnswer || isAnswered}
+        >
+          {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
+        </button>
+
+        <div className="button-group">
+          <button 
+            onClick={onPrevious}
+            disabled={!hasPrevious}
+            className="nav-button"
+          >
+            Previous
+          </button>
+          <button 
+            onClick={onNext}
+            disabled={!hasNext}
+            className="nav-button"
+          >
+            Next
+          </button>
+        </div>
+
+        {mode === 'practice' && (
+          <div className="button-group">
+            {!isAnswered && !showAnswer && (
+              <button 
+                onClick={() => {
+                  setHintedAnswer(correctAnswer);
+                  setWasHintUsed(true);
+                  setTimeout(() => {
+                    setHintedAnswer(null);
+                  }, 1000);
+                }}
+                className="nav-button"
+              >
+                Get Answer
+              </button>
+            )}
+            <button 
+              onClick={handleFinish}
+              disabled={!areAllQuestionsAnswered}
+              className="nav-button"
+            >
+              Finish
+            </button>
+          </div>
+        )}
+
+        {mode !== 'practice' && (
+          <button 
+            onClick={handleFinish}
+            disabled={!areAllQuestionsAnswered}
+            className="nav-button"
+          >
+            Finish Test
+          </button>
+        )}
+
         <button 
           onClick={handleQuit}
           className="nav-button quit-button"
         >
-          {mode === 'practice' ? 'Quit' : 'Finish Test'}
+          Quit
         </button>
-        <button 
-          onClick={onPrevious}
-          disabled={!hasPrevious}
-          className="nav-button"
-        >
-          Previous
-        </button>
-        <button 
-          onClick={onNext}
-          disabled={!hasNext}
-          className="nav-button"
-        >
-          Next
-        </button>
-        <div className="right-buttons">
-          {mode === 'practice' && !isAnswered && !showAnswer && (
-            <button 
-              onClick={() => setShowAnswer(true)}
-              className="nav-button get-answer-button"
-            >
-              Get Answer
-            </button>
-          )}
-          {mode === 'practice' && (
-            <button 
-              onClick={handleFinish}
-              disabled={!areAllQuestionsAnswered}
-              className="nav-button finish-button"
-            >
-              Finish
-            </button>
-          )}
-        </div>
       </div>
       <Modal 
         isOpen={isModalOpen}
