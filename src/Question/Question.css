@@ -298,18 +298,25 @@
   border-color: #c3e6cb;
 }
 
-@keyframes flash {
+/* Replace the existing flash animation with this new sparkle effect */
+@keyframes sparkle {
   0% {
-    background-color: #ffffff;
+    background: linear-gradient(to right, #ffffff, #ffffff);
+  }
+  25% {
+    background: linear-gradient(to right, #fffde7, #ffffff);
   }
   50% {
-    background-color: #ffd700;
+    background: linear-gradient(to right, #ffffff, #fffde7, #ffffff);
+  }
+  75% {
+    background: linear-gradient(to right, #ffffff, #ffffff, #fffde7);
   }
   100% {
-    background-color: #ffffff;
+    background: linear-gradient(to right, #ffffff, #ffffff);
   }
 }
 
 .option-button.hint-flash {
-  animation: flash 1s ease-in-out;
+  animation: sparkle 0.4s ease-out;
 }
