@@ -208,7 +208,7 @@ const Question: FC<QuestionProps> = ({
                   setWasHintUsed(true);
                   setTimeout(() => {
                     setHintedAnswer(null);
-                  }, 10);
+                  }, 100);
                 }}
                 className="nav-button"
               >
