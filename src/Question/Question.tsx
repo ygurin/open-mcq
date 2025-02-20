@@ -206,13 +206,22 @@ const Question: FC<QuestionProps> = ({
                 onClick={() => {
                   setHintedAnswer(correctAnswer);
                   setWasHintUsed(true);
-                  setTimeout(() => {
-                    setHintedAnswer(null);
-                  }, 100);
+                  let count = 0;
+                  const flash = () => {
+                    setHintedAnswer(correctAnswer);
+                    setTimeout(() => {
+                      setHintedAnswer(null);
+                      count++;
+                      if (count < 3) {
+                        setTimeout(flash, 200);
+                      }
+                    }, 200);
+                  };
+                  flash();
                 }}
                 className="nav-button"
               >
-                Get Answer
+                Get Hint
               </button>
             )}
             <button 
