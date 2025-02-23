@@ -286,11 +286,6 @@ class App extends Component<object, AppState> {
           }
         }
       }));
-
-      // Auto-advance to next question in exam mode if not the last question
-      if (this.state.exam.currentQuestionIndex < 39) {
-        this.handleNext();
-      }
     } else if (this.state.selectedCategory) {
       const questions = this.getQuestions(this.state.selectedCategory);
       const currentQuestion = questions[Number(this.state.selectedQuestion)];
