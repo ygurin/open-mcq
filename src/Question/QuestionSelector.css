@@ -141,6 +141,7 @@
   gap: 0.5rem;
 }
 
+/* Base selector button style */
 .selector-button {
   width: 3rem;
   height: 3rem;
@@ -153,29 +154,32 @@
   cursor: pointer;
 }
 
+/* Current question indicator */
 .selector-button.current {
   border: 2px solid #007bff;
 }
 
-.selector-button.correct {
+/* Answered question in exam mode - blue background */
+.selector-button.answered {
+  background-color: #007bff;  /* Same blue as nav buttons */
+  border: 2px solid #007bff;
+  color: white;  /* White text for contrast */
+}
+
+/* Correct/incorrect styles for non-exam modes only */
+.selector-button.correct:not(.answered) {
   background-color: #d4edda;
   color: #155724;
 }
 
-.selector-button.incorrect {
+.selector-button.incorrect:not(.answered) {
   background-color: #f8d7da;
   color: #721c24;
 }
 
-.selector-button.answered {
-  background-color: #cce5ff;
-  border: 2px solid #007bff;
-  color: #000;
-}
-
 /* Ensure answered state shows even when combined with current */
 .selector-button.current.answered {
-  background-color: #cce5ff;
+  background-color: #007bff;
   border: 2px solid #007bff;
-  color: #000;
+  color: white;
 }

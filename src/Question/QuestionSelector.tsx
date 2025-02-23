@@ -29,7 +29,6 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = ({
       className += " current";
     }
     
-    console.log("mode:", mode);
     if (answered?.isAnswered) {
       if (mode === 'exam') {
         // In exam mode, only show blue for answered questions

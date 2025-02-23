@@ -106,9 +106,9 @@ const Question: FC<QuestionProps> = ({
     
     if (isAnswered) {
       if (mode === 'exam') {
-        // In exam mode, only show selected state
+        // In exam mode, show the selected answer in blue
         if (selectedAnswer === answer) {
-          className += ' selected';
+          className += ' exam-answered';
         }
       } else {
         // In other modes, show correct/incorrect feedback

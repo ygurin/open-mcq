@@ -218,6 +218,19 @@
   color: #721c24;
 }
 
+.option-button.exam-answered {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.option-button.exam-answered:disabled {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+  opacity: 1;
+}
+
 .answer-section {
   margin: 20px 0;
   display: flex;
