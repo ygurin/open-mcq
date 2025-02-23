@@ -129,6 +129,7 @@ const Question: FC<QuestionProps> = ({
     <div className="Question">
       <h2 className="question-header">{heading}</h2>
       <QuestionNav
+        mode={mode}
         currentQuestion={currentQuestionIndex}
         totalQuestions={totalQuestions}
         onQuestionSelect={onQuestionSelect}

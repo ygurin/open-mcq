@@ -12,5 +12,5 @@ export interface QuestionNavProps {
     isAnswered: boolean;
     isCorrect: boolean;
   }[];
-  mode: QuestionMode;
+  mode: "practice" | "category-test" | "exam";
 }

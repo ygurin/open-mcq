@@ -2,6 +2,7 @@ import React from 'react';
 import './QuestionSelector.css';
 
 interface QuestionSelectorProps {
+  mode: 'practice' | 'category-test' | 'exam';
   currentQuestion: number;
   totalQuestions: number;
   onQuestionSelect: (index: number) => void;
@@ -12,6 +13,7 @@ interface QuestionSelectorProps {
 }
 
 const QuestionSelector: React.FC<QuestionSelectorProps> = ({
+  mode,
   currentQuestion,
   totalQuestions,
   onQuestionSelect,
@@ -21,17 +23,24 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = ({
 
   const getButtonClass = (index: number) => {
     const answered = answeredQuestions[index];
-    let className = "selector-button ";
+    let className = "selector-button";
     
     if (index === currentQuestion) {
-      className += "current ";
+      className += " current";
     }
     
+    console.log("mode:", mode);
     if (answered?.isAnswered) {
-      className += answered.isCorrect ? "correct " : "incorrect ";
+      if (mode === 'exam') {
+        // In exam mode, only show blue for answered questions
+        className += " answered";
+      } else {
+        // In other modes, show correct/incorrect
+        className += answered.isCorrect ? " correct" : " incorrect";
+      }
     }
     
-    return className.trim();
+    return className;
   };
 
   return (
