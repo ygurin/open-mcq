@@ -105,10 +105,18 @@ const Question: FC<QuestionProps> = ({
     }
     
     if (isAnswered) {
-      if (selectedAnswer === answer && isCorrect) {
-        className += ' correct';
-      } else if (selectedAnswer === answer && !isCorrect) {
-        className += ' incorrect';
+      if (mode === 'exam') {
+        // In exam mode, only show selected state
+        if (selectedAnswer === answer) {
+          className += ' selected';
+        }
+      } else {
+        // In other modes, show correct/incorrect feedback
+        if (selectedAnswer === answer && isCorrect) {
+          className += ' correct';
+        } else if (selectedAnswer === answer && !isCorrect) {
+          className += ' incorrect';
+        }
       }
     } else if (selectedAnswer === answer) {
       className += ' selected';
@@ -159,7 +167,7 @@ const Question: FC<QuestionProps> = ({
           ))}
       </div>
       <div className="answer-section">
-        {isAnswered && (
+        {isAnswered && mode !== 'exam' && (
           <div className="feedback-section">
             <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
               {isCorrect ? 'Correct!' : 'Incorrect!'}
