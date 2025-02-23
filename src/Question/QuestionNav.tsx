@@ -11,11 +11,13 @@ const QuestionNav: React.FC<QuestionNavProps> = ({
   hasNext,
   hasPrevious,
   answeredQuestions,
+  mode,
 }) => {
   return (
     <div className="question-nav">
       <div className="selector-row">
         <QuestionSelector
+          mode={mode} 
           currentQuestion={currentQuestion}
           totalQuestions={totalQuestions}
           onQuestionSelect={onQuestionSelect}

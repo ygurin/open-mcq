@@ -1,3 +1,5 @@
+export type QuestionMode = "exam" | "practice" | "default";
+
 export interface QuestionNavProps {
   currentQuestion: number;
   totalQuestions: number;
@@ -10,4 +12,5 @@ export interface QuestionNavProps {
     isAnswered: boolean;
     isCorrect: boolean;
   }[];
+  mode: QuestionMode;
 }
