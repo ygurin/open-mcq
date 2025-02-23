@@ -333,3 +333,36 @@
 .option-button.hint-flash {
   animation: sparkle 0.4s ease-out;
 }
+
+.flag-button {
+  background-color: #6c757d;
+}
+
+.flag-button.flagged {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.option-button.flagged {
+  background-color: #fff3cd;
+  border: 2px solid #ffc107;
+  color: #000;
+}
+
+/* Disabled states for buttons */
+.answer-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.flag-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.flag-button.flagged:disabled {
+  background-color: #ffc107;
+  opacity: 0.7;
+}

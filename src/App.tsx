@@ -43,6 +43,7 @@ interface ExamState {
   timeRemaining: number;
   isComplete: boolean;
   startTime?: number;
+  flaggedQuestions: number[];
 }
 
 
@@ -93,8 +94,31 @@ class App extends Component<object, AppState> {
         currentQuestionIndex: 0,
         timeRemaining: EXAM_TIME_MINUTES * 60,
         isComplete: false,
-        startTime: Date.now()
+        startTime: Date.now(),
+        flaggedQuestions: [] 
       }
+    });
+  };
+
+  handleFlagQuestion = (index: number) => {
+    this.setState(prevState => {
+      if (!prevState.exam) return prevState;
+      
+      const flaggedQuestions = [...prevState.exam.flaggedQuestions];
+      const flagIndex = flaggedQuestions.indexOf(index);
+      
+      if (flagIndex === -1) {
+        flaggedQuestions.push(index);
+      } else {
+        flaggedQuestions.splice(flagIndex, 1);
+      }
+      
+      return {
+        exam: {
+          ...prevState.exam,
+          flaggedQuestions
+        }
+      };
     });
   };
 
@@ -438,6 +462,8 @@ class App extends Component<object, AppState> {
             };
           })}
           correctAnswer={currentQuestion.answer}
+          flaggedQuestions={this.state.exam.flaggedQuestions}
+          onFlagQuestion={this.handleFlagQuestion}
         />
       </div>
     );

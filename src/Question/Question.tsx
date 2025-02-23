@@ -32,6 +32,8 @@ interface QuestionProps {
     isAnswered: boolean;
     isCorrect: boolean;
   }[];
+  onFlagQuestion?: (index: number) => void;
+  flaggedQuestions?: number[];
 }
 
 const Question: FC<QuestionProps> = ({
@@ -58,7 +60,9 @@ const Question: FC<QuestionProps> = ({
   totalQuestions,
   onQuestionSelect,
   answeredQuestions,
-  correctAnswer
+  correctAnswer,
+  onFlagQuestion,
+  flaggedQuestions
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
@@ -104,14 +108,15 @@ const Question: FC<QuestionProps> = ({
       className += ' hint-flash';
     }
     
-    if (isAnswered) {
+    // If question is flagged and this is the selected answer, show yellow
+    if (flaggedQuestions?.includes(currentQuestionIndex) && selectedAnswer === answer) {
+      className += ' flagged';
+    } else if (isAnswered) {
       if (mode === 'exam') {
-        // In exam mode, show the selected answer in blue
         if (selectedAnswer === answer) {
           className += ' exam-answered';
         }
       } else {
-        // In other modes, show correct/incorrect feedback
         if (selectedAnswer === answer && isCorrect) {
           className += ' correct';
         } else if (selectedAnswer === answer && !isCorrect) {
@@ -186,7 +191,7 @@ const Question: FC<QuestionProps> = ({
         <button 
           className="answer-button"
           onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
-          disabled={!selectedAnswer || isAnswered}
+          disabled={!selectedAnswer || isAnswered || (mode === 'exam' && flaggedQuestions?.includes(currentQuestionIndex))}
         >
           {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
         </button>
@@ -259,6 +264,16 @@ const Question: FC<QuestionProps> = ({
         >
           Quit
         </button>
+
+        {mode === 'exam' && (
+          <button 
+            onClick={() => onFlagQuestion?.(currentQuestionIndex)}
+            className={`nav-button flag-button ${flaggedQuestions?.includes(currentQuestionIndex) ? 'flagged' : ''}`}
+            disabled={isAnswered}
+          >
+            {flaggedQuestions?.includes(currentQuestionIndex) ? 'Unflag' : 'Flag'}
+          </button>
+        )}
       </div>
       <Modal 
         isOpen={isModalOpen}

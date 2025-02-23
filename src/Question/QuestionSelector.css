@@ -183,3 +183,18 @@
   border: 2px solid #007bff;
   color: white;
 }
+
+/* Update flagged question styles in grid */
+.selector-button.flagged {
+  background-color: #fff3cd;
+  border: 2px solid #ffc107;
+  color: #000;
+}
+
+/* Ensure flagged state shows even when combined with other states */
+.selector-button.current.flagged,
+.selector-button.answered.flagged {
+  background-color: #fff3cd;
+  border: 2px solid #ffc107;
+  color: #000;
+}
