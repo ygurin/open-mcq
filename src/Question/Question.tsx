@@ -221,7 +221,7 @@ const Question: FC<QuestionProps> = ({
                 }}
                 className="nav-button"
               >
-                Get Hint
+                Get Answer
               </button>
             )}
             <button 
