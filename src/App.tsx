@@ -9,6 +9,7 @@ import TestResults from './components/TestResults/TestResults';
 import { shuffleArray } from './utils/shuffle';
 import ExamTimer from './components/ExamTimer/ExamTimer';
 import ExamResults from './components/ExamResults/ExamResults';
+import { EXAM_TIME_MINUTES } from './constants';
 
 interface Item {
   question: string;
@@ -90,7 +91,7 @@ class App extends Component<object, AppState> {
       exam: {
         questions: shuffledQuestions,
         currentQuestionIndex: 0,
-        timeRemaining: 10, // Changed from 45 * 60 to 10 seconds
+        timeRemaining: EXAM_TIME_MINUTES * 60,
         isComplete: false,
         startTime: Date.now()
       }
@@ -399,7 +400,7 @@ class App extends Component<object, AppState> {
       <div className="exam-mode-container">
         <ExamTimer
           onTimeUp={this.handleExamTimeUp}
-          totalMinutes={10/60}
+          totalMinutes={EXAM_TIME_MINUTES}
         />
         <Question
           mode="exam"

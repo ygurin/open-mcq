@@ -1,5 +1,6 @@
 import React from 'react';
 import './ExamResults.css';
+import { EXAM_TIME_MINUTES } from '../../constants';
 
 interface ExamResultsProps {
   correctAnswers: number;
@@ -40,6 +41,10 @@ const ExamResults: React.FC<ExamResultsProps> = ({
         <div className="result-item">
           <label>Required to Pass:</label>
           <span>35/40 questions (87.5%)</span>
+        </div>
+        <div className="result-item">
+          <label>Time Allowed:</label>
+          <span>{EXAM_TIME_MINUTES} minutes</span>
         </div>
       </div>
 
