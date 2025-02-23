@@ -143,6 +143,7 @@ const Question: FC<QuestionProps> = ({
         hasNext={hasNext}
         hasPrevious={hasPrevious}
         answeredQuestions={answeredQuestions}
+        flaggedQuestions={flaggedQuestions}
       />
       <div className="question-text-container">
         <p className="question-text">{ques}</p>

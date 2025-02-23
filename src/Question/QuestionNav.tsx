@@ -12,6 +12,7 @@ const QuestionNav: React.FC<QuestionNavProps> = ({
   hasPrevious,
   answeredQuestions,
   mode,
+  flaggedQuestions,
 }) => {
   return (
     <div className="question-nav">
@@ -22,6 +23,7 @@ const QuestionNav: React.FC<QuestionNavProps> = ({
           totalQuestions={totalQuestions}
           onQuestionSelect={onQuestionSelect}
           answeredQuestions={answeredQuestions}
+          flaggedQuestions={flaggedQuestions}
         />
       </div>
       <div className="nav-buttons-row">

@@ -10,6 +10,7 @@ interface QuestionSelectorProps {
     isAnswered: boolean;
     isCorrect: boolean;
   }[];
+  flaggedQuestions?: number[];
 }
 
 const QuestionSelector: React.FC<QuestionSelectorProps> = ({
@@ -18,6 +19,7 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = ({
   totalQuestions,
   onQuestionSelect,
   answeredQuestions,
+  flaggedQuestions = [],
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -28,13 +30,15 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = ({
     if (index === currentQuestion) {
       className += " current";
     }
+
+    if (flaggedQuestions.includes(index)) {
+      className += " flagged";
+    }
     
     if (answered?.isAnswered) {
       if (mode === 'exam') {
-        // In exam mode, only show blue for answered questions
         className += " answered";
       } else {
-        // In other modes, show correct/incorrect
         className += answered.isCorrect ? " correct" : " incorrect";
       }
     }
