@@ -189,13 +189,25 @@ const Question: FC<QuestionProps> = ({
         )}
       </div>
       <div className="navigation-buttons">
-        <button 
-          className="answer-button"
-          onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
-          disabled={!selectedAnswer || isAnswered || (mode === 'exam' && flaggedQuestions?.includes(currentQuestionIndex))}
-        >
-          {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
-        </button>
+        <div className="primary-buttons">
+          <button 
+            className="answer-button"
+            onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
+            disabled={!selectedAnswer || isAnswered || (mode === 'exam' && flaggedQuestions?.includes(currentQuestionIndex))}
+          >
+            {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
+          </button>
+
+          {mode === 'exam' && (
+            <button 
+              onClick={() => onFlagQuestion?.(currentQuestionIndex)}
+              className={`answer-button flag-button ${flaggedQuestions?.includes(currentQuestionIndex) ? 'flagged' : ''}`}
+              disabled={isAnswered}
+            >
+              {flaggedQuestions?.includes(currentQuestionIndex) ? 'Unflag' : 'Flag'}
+            </button>
+          )}
+        </div>
 
         <div className="button-group">
           <button 
@@ -265,16 +277,6 @@ const Question: FC<QuestionProps> = ({
         >
           Quit
         </button>
-
-        {mode === 'exam' && (
-          <button 
-            onClick={() => onFlagQuestion?.(currentQuestionIndex)}
-            className={`nav-button flag-button ${flaggedQuestions?.includes(currentQuestionIndex) ? 'flagged' : ''}`}
-            disabled={isAnswered}
-          >
-            {flaggedQuestions?.includes(currentQuestionIndex) ? 'Unflag' : 'Flag'}
-          </button>
-        )}
       </div>
       <Modal 
         isOpen={isModalOpen}

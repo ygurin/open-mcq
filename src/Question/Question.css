@@ -335,12 +335,20 @@
 }
 
 .flag-button {
-  background-color: #6c757d;
+  background-color: #007bff !important; /* Same blue as other buttons */
 }
 
 .flag-button.flagged {
-  background-color: #ffc107;
-  color: #000;
+  background-color: #ffc107 !important;
+  color: #000 !important;
+}
+
+.flag-button:hover:not(:disabled) {
+  background-color: #0056b3 !important; /* Same hover blue as other buttons */
+}
+
+.flag-button.flagged:hover:not(:disabled) {
+  background-color: #e0a800 !important;
 }
 
 .option-button.flagged {
@@ -365,4 +373,29 @@
 .flag-button.flagged:disabled {
   background-color: #ffc107;
   opacity: 0.7;
+}
+
+.primary-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 200px;
+  margin-bottom: 20px;
+}
+
+.flag-button {
+  background-color: #007bff !important; /* Same blue as other buttons */
+}
+
+.flag-button.flagged {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+}
+
+.flag-button:hover:not(:disabled) {
+  background-color: #0056b3 !important; /* Same hover blue as other buttons */
+}
+
+.flag-button.flagged:hover:not(:disabled) {
+  background-color: #e0a800 !important;
 }
