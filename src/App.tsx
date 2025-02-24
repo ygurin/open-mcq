@@ -82,9 +82,7 @@ class App extends Component<object, AppState> {
   };
 
   initializeExamMode = () => {
-    // Get all questions from all categories
     const allQuestions: Item[] = [...Data];
-    
     const shuffledQuestions = shuffleArray(allQuestions).slice(0, 40);
     
     this.setState({
