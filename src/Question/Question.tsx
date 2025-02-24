@@ -282,12 +282,19 @@ const Question: FC<QuestionProps> = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmQuit}
+        title={
+          mode === 'practice' 
+            ? 'Quit to Menu' 
+            : mode === 'category-test'
+              ? 'Exit to Results'
+              : 'Finish Exam'
+        }
         message={
           mode === 'practice' 
             ? 'Are you sure you want to quit to the menu?' 
             : mode === 'exam'
               ? 'Are you sure you want to finish the exam?'
-              : 'Are you sure you want to finish the test?'
+              : 'Are you sure you want to exit to results?'
         }
       />
        <Modal 
