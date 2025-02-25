@@ -12,7 +12,7 @@ const QuestionNav: React.FC<QuestionNavProps> = ({
   hasPrevious,
   answeredQuestions,
   mode,
-  flaggedQuestions,
+  flaggedQuestions = [], // Added default value
 }) => {
   return (
     <div className="question-nav">

@@ -1,6 +1,12 @@
 export type QuestionMode = "exam" | "practice" | "default";
 
+export interface AnsweredQuestion {
+  isAnswered: boolean;
+  isCorrect: boolean;
+}
+
 export interface QuestionNavProps {
+  mode: "practice" | "category-test" | "exam";
   currentQuestion: number;
   totalQuestions: number;
   onQuestionSelect: (index: number) => void;
@@ -8,9 +14,6 @@ export interface QuestionNavProps {
   onPrevious: () => void;
   hasNext: boolean;
   hasPrevious: boolean;
-  answeredQuestions: {
-    isAnswered: boolean;
-    isCorrect: boolean;
-  }[];
-  mode: "practice" | "category-test" | "exam";
+  answeredQuestions: AnsweredQuestion[];
+  flaggedQuestions?: number[];
 }
