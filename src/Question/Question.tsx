@@ -133,29 +133,73 @@ const Question: FC<QuestionProps> = ({
   // Add keyboard navigation effect
   useEffect(() => {
     const handleKeyPress = (e: globalThis.KeyboardEvent) => {
-      if (e.key === 'ArrowLeft' && hasPrevious) {
-        onPrevious();
-      } else if (e.key === 'ArrowRight' && hasNext) {
-        onNext();
-      } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-        e.preventDefault(); // Prevent page scroll
-        const options = shuffledOptions.options;
-        if (!selectedAnswer) {
-          onAnswerSelect(options[0]);
-          return;
-        }
-        const currentIndex = options.indexOf(selectedAnswer);
-        if (currentIndex === -1) return;
-        
-        let newIndex;
-        if (e.key === 'ArrowUp') {
-          newIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
-        } else {
-          newIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
-        }
-        onAnswerSelect(options[newIndex]);
-      } else if (e.key === 'Enter' && selectedAnswer && !isAnswered) {
-        onAnswerSubmit(selectedAnswer);
+      switch (e.key) {
+        case 'Escape':
+          // Toggle modal state with Escape key
+          if (isModalOpen) {
+            setIsModalOpen(false);
+          } else if (isFinishModalOpen) {
+            setIsFinishModalOpen(false);
+          } else {
+            handleQuit();
+          }
+          break;
+
+        // Only handle other keys if modals are closed
+        default:
+          if (isModalOpen || isFinishModalOpen) {
+            return;
+          }
+
+          switch (e.key) {
+            case 'ArrowLeft':
+              if (hasPrevious) {
+                onPrevious();
+              }
+              break;
+            
+            case 'ArrowRight':
+              if (hasNext) {
+                onNext();
+              }
+              break;
+            
+            case 'ArrowUp':
+            case 'ArrowDown': {
+              e.preventDefault();
+              const options = shuffledOptions.options;
+              if (!selectedAnswer) {
+                onAnswerSelect(options[0]);
+                return;
+              }
+              const currentIndex = options.indexOf(selectedAnswer);
+              if (currentIndex === -1) return;
+              
+              let newIndex;
+              if (e.key === 'ArrowUp') {
+                newIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+              } else {
+                newIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+              }
+              onAnswerSelect(options[newIndex]);
+              break;
+            }
+            
+            case 'Enter':
+              if (selectedAnswer && !isAnswered && 
+                  // Add check for flagged questions in exam mode
+                  !(mode === 'exam' && flaggedQuestions?.includes(currentQuestionIndex))) {
+                onAnswerSubmit(selectedAnswer);
+              }
+              break;
+            
+            case 'f':
+            case 'F':
+              if (mode === 'exam' && !isAnswered && onFlagQuestion) {
+                onFlagQuestion(currentQuestionIndex);
+              }
+              break;
+          }
       }
     };
 
@@ -170,7 +214,14 @@ const Question: FC<QuestionProps> = ({
     selectedAnswer,
     onAnswerSelect,
     onAnswerSubmit,
-    isAnswered
+    isAnswered,
+    isModalOpen,
+    isFinishModalOpen,
+    mode,
+    onFlagQuestion,
+    currentQuestionIndex,
+    flaggedQuestions, 
+    handleQuit
   ]);
 
   return (
