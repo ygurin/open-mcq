@@ -88,6 +88,15 @@
   background-color: #e9ecef;
 }
 
+.option-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.option-button:focus:not(:focus-visible) {
+  outline: none;
+}
+
 .navigation-buttons {
   margin-top: 20px;
   display: flex;

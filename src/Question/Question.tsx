@@ -130,6 +130,49 @@ const Question: FC<QuestionProps> = ({
     return className;
   };
 
+  // Add keyboard navigation effect
+  useEffect(() => {
+    const handleKeyPress = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' && hasPrevious) {
+        onPrevious();
+      } else if (e.key === 'ArrowRight' && hasNext) {
+        onNext();
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault(); // Prevent page scroll
+        const options = shuffledOptions.options;
+        if (!selectedAnswer) {
+          onAnswerSelect(options[0]);
+          return;
+        }
+        const currentIndex = options.indexOf(selectedAnswer);
+        if (currentIndex === -1) return;
+        
+        let newIndex;
+        if (e.key === 'ArrowUp') {
+          newIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+        } else {
+          newIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+        }
+        onAnswerSelect(options[newIndex]);
+      } else if (e.key === 'Enter' && selectedAnswer && !isAnswered) {
+        onAnswerSubmit(selectedAnswer);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [
+    hasPrevious, 
+    hasNext, 
+    onPrevious, 
+    onNext, 
+    shuffledOptions, 
+    selectedAnswer,
+    onAnswerSelect,
+    onAnswerSubmit,
+    isAnswered
+  ]);
+
   return (
     <div className="Question">
       <h2 className="question-header">{heading}</h2>
