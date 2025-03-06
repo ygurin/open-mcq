@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 257" width="31.88" height="32" role="img" aria-label="Open MCQ Logo">
+  <!-- Background -->
+  <rect width="256" height="257" rx="20" fill="#4CAF50"/>
+  
+  <!-- Letter 'O' for Open -->
+  <circle cx="70" cy="128" r="30" fill="#FFF" stroke="#2E7D32" stroke-width="8"/>
+  
+  <!-- Letter 'MCQ' stylized -->
+  <text x="110" y="140" font-family="Arial, sans-serif" font-size="50" fill="#FFF" font-weight="bold">MCQ</text>
+  
+  <!-- Checkmark inside 'O' -->
+  <path d="M55 128 L65 138 L85 110" stroke="#2E7D32" stroke-width="8" fill="none" stroke-linecap="round"/>
+</svg>
