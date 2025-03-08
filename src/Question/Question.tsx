@@ -227,6 +227,18 @@ const Question: FC<QuestionProps> = ({
     handleQuit
   ]);
 
+  const handleOptionSelect = (option: string) => {
+    // In review mode, prevent selecting answers for unanswered questions
+    if (mode === 'review' && !isAnswered) {
+      return;
+    }
+    
+    // Regular behavior for answered questions or non-review modes
+    if (!isAnswered || mode === 'practice') {
+      onAnswerSelect(option);
+    }
+  };
+
   return (
     <div className="Question">
       <h2 className="question-header">{heading}</h2>
@@ -263,8 +275,9 @@ const Question: FC<QuestionProps> = ({
               <button 
                   key={index}
                   className={getButtonStyle(option)}
-                  onClick={() => onAnswerSelect(option)}
-                  disabled={isAnswered}
+                  onClick={() => handleOptionSelect(option)}
+                  // Only disable if in review mode AND question wasn't previously answered
+                  disabled={mode === 'review' && !isAnswered}
               >
                   {option}
               </button>
@@ -290,9 +303,10 @@ const Question: FC<QuestionProps> = ({
           <button 
             className="answer-button"
             onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
-            disabled={!selectedAnswer || isAnswered || (mode === 'exam' && flaggedQuestions?.includes(currentQuestionIndex))}
+            // Disable submit button in review mode for unanswered questions
+            disabled={!selectedAnswer || isAnswered || (mode === 'review' && !isAnswered)}
           >
-            {mode === 'practice' ? 'Check Answer' : 'Submit Answer'}
+            {isAnswered ? 'Answer Submitted' : 'Submit Answer'}
           </button>
 
           {mode === 'exam' && (

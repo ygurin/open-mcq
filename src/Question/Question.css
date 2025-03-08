@@ -411,3 +411,28 @@
     max-width: 100%;
   }
 }
+
+/* Review mode styles */
+.option-button:disabled.review-mode {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* For correctly answered questions in review mode */
+.review-mode .option-button.correct {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+/* For incorrectly answered questions in review mode */
+.review-mode .option-button.incorrect {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+/* For showing the correct answer in review mode when answered incorrectly */
+.review-mode .option-button.correct-answer {
+  border: 2px solid #28a745;
+}
