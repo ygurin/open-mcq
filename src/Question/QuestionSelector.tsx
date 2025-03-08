@@ -3,7 +3,7 @@ import './QuestionSelector.css';
 import { AnsweredQuestion } from './types';
 
 interface QuestionSelectorProps {
-  mode: 'practice' | 'category-test' | 'exam';
+  mode: 'practice' | 'category-test' | 'exam' | 'review';
   currentQuestion: number;
   totalQuestions: number;
   onQuestionSelect: (index: number) => void;
