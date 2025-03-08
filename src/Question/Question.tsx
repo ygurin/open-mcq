@@ -1,11 +1,11 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 import Modal from './../Modal/Modal';
 import './Question.css';
 import QuestionNav from './QuestionNav';
 import { ShuffledQuestion, shuffleQuestionOptions } from '../utils/shuffle';
 
 interface QuestionProps {
-  mode: 'practice' | 'category-test' | 'exam';
+  mode: 'practice' | 'category-test' | 'exam' | 'review';
   heading: string;
   ques: string;
   image?: string;
@@ -65,39 +65,42 @@ const Question: FC<QuestionProps> = ({
   flaggedQuestions
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'quit' | 'finish'>('quit'); 
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [shuffledOptions, setShuffledOptions] = useState<ShuffledQuestion>({ 
     options: [q1, q2, q3, q4],
     correctAnswerIndex: 0
-});
+  });
   const [hintedAnswer, setHintedAnswer] = useState<string | null>(null);
   const [wasHintUsed, setWasHintUsed] = useState(false);
 
-  const handleQuit = () => {
+  const handleQuit = useCallback(() => {
+    setModalType('quit');
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleFinish = () => {
-    setIsFinishModalOpen(true);
-  };
+  const handleFinish = useCallback(() => {
+    setModalType('finish');
+    setIsModalOpen(true);
+  }, []);
 
-  const handleConfirmQuit = () => {
+  const handleConfirmAction = useCallback(() => {
     setIsModalOpen(false);
     onQuit();
-  };
+  }, [onQuit]);
 
-  const handleConfirmFinish = () => {
+  const handleConfirmFinish = useCallback(() => {
     setIsFinishModalOpen(false);
     onQuit();
-  };
+  }, [onQuit]);
 
   useEffect(() => {
     const options = [q1, q2, q3, q4];
     const shuffled = shuffleQuestionOptions(options, correctAnswer);
     setShuffledOptions(shuffled);
     setShowAnswer(false);
-}, [currentQuestionIndex, q1, q2, q3, q4, correctAnswer]);
+  }, [currentQuestionIndex, q1, q2, q3, q4, correctAnswer]);
 
   const areAllQuestionsAnswered = answeredQuestions.every(q => q.isAnswered);
 
@@ -369,32 +372,37 @@ const Question: FC<QuestionProps> = ({
           onClick={handleQuit}
           className="nav-button quit-button"
         >
-          Quit
+          {mode === 'exam' ? 'Quit Exam' : 'Quit'}
         </button>
       </div>
       <Modal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={handleConfirmQuit}
+        onConfirm={handleConfirmAction}
         title={
           mode === 'practice' 
             ? 'Quit to Menu' 
             : mode === 'category-test'
               ? 'Exit to Results'
-              : 'Finish Exam'
+              : modalType === 'finish'
+                ? 'Finish Exam'
+                : 'Quit Exam'
         }
         message={
           mode === 'practice' 
             ? 'Are you sure you want to quit to the menu?' 
             : mode === 'exam'
-              ? 'Are you sure you want to finish the exam?'
+              ? modalType === 'finish'
+                ? 'Are you sure you want to finish the exam?'
+                : 'Are you sure you want to quit the exam?'
               : 'Are you sure you want to exit to results?'
         }
       />
        <Modal 
-        isOpen={isFinishModalOpen}
+        isOpen={isFinishModalOpen && mode === 'practice'}
         onClose={() => setIsFinishModalOpen(false)}
         onConfirm={handleConfirmFinish}
+        title="Finish Practice"
         message="Are you sure you want to finish the practice session?"
       />
     </div>

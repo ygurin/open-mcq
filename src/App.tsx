@@ -44,8 +44,8 @@ interface ExamState {
   isComplete: boolean;
   startTime?: number;
   flaggedQuestions: number[];
+  isReview?: boolean; // Add this property
 }
-
 
 interface AppState {
   mode: 'practice' | 'category-test' | 'exam' | null;
@@ -110,8 +110,8 @@ class App extends Component<object, AppState> {
       } else {
         flaggedQuestions.splice(flagIndex, 1);
       }
-      
       return {
+        ...prevState,
         exam: {
           ...prevState.exam,
           flaggedQuestions
@@ -123,6 +123,7 @@ class App extends Component<object, AppState> {
   handleExamTimeUp = () => {
     if (this.state.exam) {
       this.setState(prevState => ({
+        ...prevState, 
         exam: {
           ...prevState.exam!,
           isComplete: true
@@ -154,6 +155,7 @@ class App extends Component<object, AppState> {
   handleExamQuestionChange = (index: number) => {
     if (this.state.exam) {
       this.setState(prevState => ({
+        ...prevState, 
         exam: {
           ...prevState.exam!,
           currentQuestionIndex: index
@@ -406,26 +408,41 @@ class App extends Component<object, AppState> {
     });
   };
 
+  reviewExamQuestions = () => {
+    if (this.state.exam) {
+      this.setState(prevState => ({
+        ...prevState,  // Include all existing state
+        showResults: false,
+        exam: {
+          ...prevState.exam!,
+          isReview: true
+        }
+      }));
+    }
+  };
+
   renderExamMode = () => {
     if (!this.state.exam) return null;
 
-    const { questions, currentQuestionIndex, isComplete } = this.state.exam;
+    const { questions, currentQuestionIndex, isComplete, isReview } = this.state.exam;
     const currentQuestion = questions[currentQuestionIndex];
     const questionKey = `exam-${currentQuestionIndex}`;
     const answerState = this.state.answeredQuestions[questionKey];
 
-    if (isComplete || this.state.showResults) {
+    if (isComplete && !isReview && this.state.showResults) {
       return this.renderResults();
     }
 
     return (
       <div className="exam-mode-container">
-        <ExamTimer
-          onTimeUp={this.handleExamTimeUp}
-          totalMinutes={EXAM_TIME_MINUTES}
-        />
+        {!isReview && (
+          <ExamTimer
+            onTimeUp={this.handleExamTimeUp}
+            totalMinutes={EXAM_TIME_MINUTES}
+          />
+        )}
         <Question
-          mode="exam"
+          mode={isReview ? "review" : "exam"}
           heading={currentQuestion.heading}
           ques={currentQuestion.question}
           image={this.getImage(currentQuestion.image ?? '')}
@@ -433,25 +450,20 @@ class App extends Component<object, AppState> {
           q2={currentQuestion.questions[1]}
           q3={currentQuestion.questions[2]}
           q4={currentQuestion.questions[3]}
-          explanation={undefined}
+          explanation={currentQuestion.explanation}
           onNext={this.handleNext}
           onPrevious={this.handlePrevious}
-          hasNext={currentQuestionIndex < 39}
+          hasNext={currentQuestionIndex < questions.length - 1}
           hasPrevious={currentQuestionIndex > 0}
           onAnswerSelect={this.handleAnswerSelection}
           onAnswerSubmit={this.handleAnswerSubmit}
           isCorrect={answerState?.isCorrect ?? null}
           isAnswered={answerState?.isAnswered ?? false}
           selectedAnswer={answerState?.selectedAnswer}
-          onQuit={this.handleQuit}
+          onQuit={isReview ? this.handleBackToExamResults : this.handleQuit}
           currentQuestionIndex={currentQuestionIndex}
-          totalQuestions={40}
-          onQuestionSelect={(index) => this.setState(prevState => ({
-            exam: {
-              ...prevState.exam!,
-              currentQuestionIndex: index
-            }
-          }))}
+          totalQuestions={questions.length}
+          onQuestionSelect={this.handleExamQuestionChange}
           answeredQuestions={questions.map((_, index) => {
             const state = this.state.answeredQuestions[`exam-${index}`];
             return {
@@ -477,8 +489,8 @@ class App extends Component<object, AppState> {
           correctAnswers={results.correctAnswers}
           totalQuestions={results.totalQuestions}
           timeTaken={results.timeTaken}
-          //onRetry={() => this.initializeExamMode()}
           onBackToMenu={this.handleBackToModeSelection}
+          onReviewQuestions={this.reviewExamQuestions} // Add the review handler
         />
       );
     }
@@ -501,6 +513,17 @@ class App extends Component<object, AppState> {
       selectedCategory: category,
       selectedQuestion: String(Math.max(0, firstWrongQuestionIndex))
     });
+  };
+
+  handleBackToExamResults = () => {
+    this.setState(prevState => ({
+      ...prevState,  // Include all existing state
+      showResults: true,
+      exam: {
+        ...prevState.exam!,
+        isReview: false
+      }
+    }));
   };
 
   render() {

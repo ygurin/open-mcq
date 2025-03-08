@@ -1,4 +1,4 @@
-export type QuestionMode = "exam" | "practice" | "default";
+export type QuestionMode = "practice" | "category-test" | "exam" | "review";
 
 export interface AnsweredQuestion {
   isAnswered: boolean;
@@ -6,7 +6,7 @@ export interface AnsweredQuestion {
 }
 
 export interface QuestionNavProps {
-  mode: "practice" | "category-test" | "exam";
+  mode: "practice" | "category-test" | "exam" | "review";
   currentQuestion: number;
   totalQuestions: number;
   onQuestionSelect: (index: number) => void;
