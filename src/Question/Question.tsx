@@ -111,8 +111,20 @@ const Question: FC<QuestionProps> = ({
       className += ' hint-flash';
     }
     
-    // If question is flagged and this is the selected answer, show yellow
-    if (flaggedQuestions?.includes(currentQuestionIndex) && selectedAnswer === answer) {
+    // Special handling for review mode
+    if (mode === 'review') {
+      // Always highlight the correct answer in review mode
+      if (answer === correctAnswer) {
+        className += ' correct-answer';
+      }
+      
+      // If the user answered and selected this option (but it was wrong)
+      if (selectedAnswer === answer && answer !== correctAnswer && isAnswered) {
+        className += ' wrong-answer';
+      }
+    }
+    // Regular styling for other modes
+    else if (flaggedQuestions?.includes(currentQuestionIndex) && selectedAnswer === answer) {
       className += ' flagged';
     } else if (isAnswered) {
       if (mode === 'exam') {
@@ -284,19 +296,37 @@ const Question: FC<QuestionProps> = ({
           ))}
       </div>
       <div className="answer-section">
-        {isAnswered && mode !== 'exam' && (
+        {/* Show feedback section in these cases:
+           1. If the question is answered and not in exam mode
+           2. If in review mode (regardless of whether it was answered) 
+        */}
+        {(isAnswered && mode !== 'exam') || mode === 'review' ? (
           <div className="feedback-section">
-            <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
-              {isCorrect ? 'Correct!' : 'Incorrect!'}
-            </p>
-            {(!isCorrect || wasHintUsed) && explanation && (
+            {/* For answered questions, show correct/incorrect feedback */}
+            {isAnswered ? (
+              <p className={`answer-feedback ${isCorrect ? 'correct' : 'incorrect'}`}>
+                {isCorrect ? 'Correct!' : 'Incorrect!'}
+              </p>
+            ) : mode === 'review' ? (
+              // For unanswered questions in review mode
+              <p className="answer-feedback unanswered">
+                No answer submitted. The correct answer is highlighted.
+              </p>
+            ) : null}
+            
+            {/* Show explanation in these cases:
+               1. If the user got it wrong
+               2. If a hint was used
+               3. If in review mode (always)
+            */}
+            {(mode === 'review' || !isCorrect || wasHintUsed) && explanation && (
               <div className="explanation">
                 <h4>Explanation:</h4>
                 <p>{explanation}</p>
               </div>
             )}
           </div>
-        )}
+        ) : null}
       </div>
       <div className="navigation-buttons">
         <div className="primary-buttons">
