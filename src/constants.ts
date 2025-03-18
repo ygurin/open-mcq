@@ -1,1 +1,1 @@
-export const EXAM_TIME_MINUTES = 10;
+export const EXAM_TIME_MINUTES = 45;
