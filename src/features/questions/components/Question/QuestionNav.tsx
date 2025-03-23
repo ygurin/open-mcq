@@ -1,6 +1,6 @@
 import React from 'react';
 import QuestionSelector from './QuestionSelector';
-import { QuestionNavProps } from './types';
+import { QuestionNavProps } from '../../types';
 
 const QuestionNav: React.FC<QuestionNavProps> = ({
   currentQuestion,

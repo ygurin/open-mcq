@@ -1,8 +1,8 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import Modal from './../Modal/Modal';
+import Modal from '../../../../components/ui/Modal/Modal';
 import './Question.css';
 import QuestionNav from './QuestionNav';
-import { ShuffledQuestion, shuffleQuestionOptions } from '../utils/shuffle';
+import { ShuffledQuestion, shuffleQuestionOptions } from '../../../../utils/shuffle';
 
 interface QuestionProps {
   mode: 'practice' | 'category-test' | 'exam' | 'review';

@@ -1,6 +1,6 @@
 import React from 'react';
 import './QuestionSelector.css';
-import { AnsweredQuestion } from './types';
+import { AnsweredQuestion } from '../../types';
 
 interface QuestionSelectorProps {
   mode: 'practice' | 'category-test' | 'exam' | 'review';
