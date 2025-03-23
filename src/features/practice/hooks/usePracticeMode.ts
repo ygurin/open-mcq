@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useAppContext } from "../../../hooks/useAppContext";
+import { useQuestionNavigation } from "../../../hooks/useQuestionNavigation";
 import { Item } from "../../../types";
 
 /**
@@ -10,10 +11,12 @@ export function usePracticeMode(getQuestions: (category: string) => Item[]) {
     selectedCategory,
     selectedQuestion,
     answeredQuestions,
-    setSelectedQuestion,
     setSelectedCategory,
     updateAnsweredQuestion,
   } = useAppContext();
+
+  // Use the shared navigation hook
+  const { handleNext, handlePrevious } = useQuestionNavigation(getQuestions);
 
   /**
    * Handles answer selection in practice mode
@@ -63,35 +66,11 @@ export function usePracticeMode(getQuestions: (category: string) => Item[]) {
   );
 
   /**
-   * Navigate to next question
-   */
-  const handleNext = useCallback(() => {
-    if (!selectedCategory) return;
-
-    const questions = getQuestions(selectedCategory);
-    const currentIndex = Number(selectedQuestion);
-    if (currentIndex < questions.length - 1) {
-      setSelectedQuestion(String(currentIndex + 1));
-    }
-  }, [selectedCategory, selectedQuestion, getQuestions, setSelectedQuestion]);
-
-  /**
-   * Navigate to previous question
-   */
-  const handlePrevious = useCallback(() => {
-    const currentIndex = Number(selectedQuestion);
-    if (currentIndex > 0) {
-      setSelectedQuestion(String(currentIndex - 1));
-    }
-  }, [selectedQuestion, setSelectedQuestion]);
-
-  /**
    * Quit practice mode and go back to category selection
    */
   const handleQuit = useCallback(() => {
     setSelectedCategory(null);
-    setSelectedQuestion("0");
-  }, [setSelectedCategory, setSelectedQuestion]);
+  }, [setSelectedCategory]);
 
   /**
    * Get the answer state for a specific question

@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useAppContext } from "../../../hooks/useAppContext";
+import { useQuestionNavigation } from "../../../hooks/useQuestionNavigation";
 import { Item } from "../../../types";
 
 /**
@@ -11,13 +12,16 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
     answeredQuestions,
     selectedQuestion,
     testResults,
-    setSelectedQuestion,
     setShowResults,
     updateAnsweredQuestion,
     updateTestResult,
     resetState,
     setSelectedCategory,
+    setSelectedQuestion,
   } = useAppContext();
+
+  // Use the shared navigation hook
+  const { handleNext, handlePrevious } = useQuestionNavigation(getQuestions);
 
   /**
    * Handles answer selection in category test mode
@@ -93,29 +97,6 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
   );
 
   /**
-   * Navigate to next question
-   */
-  const handleNext = useCallback(() => {
-    if (!selectedCategory) return;
-
-    const questions = getQuestions(selectedCategory);
-    const currentIndex = Number(selectedQuestion);
-    if (currentIndex < questions.length - 1) {
-      setSelectedQuestion(String(currentIndex + 1));
-    }
-  }, [selectedCategory, selectedQuestion, getQuestions, setSelectedQuestion]);
-
-  /**
-   * Navigate to previous question
-   */
-  const handlePrevious = useCallback(() => {
-    const currentIndex = Number(selectedQuestion);
-    if (currentIndex > 0) {
-      setSelectedQuestion(String(currentIndex - 1));
-    }
-  }, [selectedQuestion, setSelectedQuestion]);
-
-  /**
    * Finish the test and show results
    */
   const handleFinishTest = useCallback(() => {
@@ -136,7 +117,8 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
       setSelectedCategory(category);
       setSelectedQuestion(String(Math.max(0, firstWrongQuestionIndex)));
     },
-    [getQuestions, setShowResults, setSelectedCategory, setSelectedQuestion]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getQuestions, setShowResults, setSelectedCategory]
   );
 
   /**
