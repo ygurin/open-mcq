@@ -277,14 +277,23 @@ const Question: FC<QuestionProps> = ({
       </div>
       <div className="navigation-buttons">
         <div className="primary-buttons">
-          <button 
-            className="answer-button"
-            onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
-            // Disable submit button in review mode for unanswered questions
-            disabled={!selectedAnswer || isAnswered || (mode === 'review' && !isAnswered)}
-          >
-            {isAnswered ? 'Answer Submitted' : 'Submit Answer'}
-          </button>
+        <button 
+          className="answer-button"
+          onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
+          disabled={
+            !selectedAnswer || 
+            isAnswered || 
+            (mode === 'review' && !isAnswered) ||
+            (mode === 'exam' && flaggedQuestions?.includes(currentQuestionIndex))
+          }
+        >
+          {isAnswered 
+            ? 'Answer Submitted' 
+            : mode === 'exam' && flaggedQuestions?.includes(currentQuestionIndex)
+              ? 'Question Flagged'
+              : 'Submit Answer'
+          }
+        </button>
 
           {mode === 'exam' && (
             <button 
