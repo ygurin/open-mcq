@@ -3,6 +3,7 @@ import { useAppContext } from "../../../hooks/useAppContext";
 import { shuffleArray } from "../../../utils/shuffle";
 import { EXAM_TIME_MINUTES } from "../../../constants/constants";
 import { Item } from "../../../types";
+import { createExamQuestionKey } from "../../../services/utilityService";
 
 /**
  * Hook for managing exam mode functionality
@@ -112,7 +113,7 @@ export function useExamMode() {
     (selectedAnswer: string) => {
       if (!exam) return;
 
-      const questionKey = `exam-${exam.currentQuestionIndex}`;
+      const questionKey = createExamQuestionKey(exam.currentQuestionIndex);
       const existingState = answeredQuestions[questionKey];
 
       if (!existingState?.isAnswered) {
@@ -135,7 +136,7 @@ export function useExamMode() {
       const currentQuestion = exam.questions[exam.currentQuestionIndex];
       const isCorrect = selectedAnswer === currentQuestion.answer;
 
-      const questionKey = `exam-${exam.currentQuestionIndex}`;
+      const questionKey = createExamQuestionKey(exam.currentQuestionIndex);
 
       updateAnsweredQuestion(questionKey, {
         isAnswered: true,
