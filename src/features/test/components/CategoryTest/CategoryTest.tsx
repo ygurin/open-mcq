@@ -24,6 +24,7 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
     selectedQuestion,
     testResults,
     showResults,
+    answeredQuestions,
     setSelectedCategory,
     setSelectedQuestion
   } = useAppContext();
@@ -108,11 +109,10 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
 
   const currentQuestion = questionList[currentIndex];
   const questionKey = `${selectedCategory}-${currentIndex}`;
-  const answerState = {
+  const answerState = answeredQuestions[questionKey] || {
     isAnswered: false,
     isCorrect: false,
-    selectedAnswer: undefined,
-    ...({} as any)[questionKey]
+    selectedAnswer: undefined
   };
 
   return (
@@ -133,15 +133,16 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
         hasPrevious={currentIndex > 0}
         onAnswerSelect={handleAnswerSelection}
         onAnswerSubmit={handleAnswerSubmit}
-        isCorrect={answerState?.isCorrect ?? null}
-        isAnswered={answerState?.isAnswered ?? false}
-        selectedAnswer={answerState?.selectedAnswer}
+        isCorrect={answerState.isCorrect ?? null}
+        isAnswered={answerState.isAnswered ?? false}
+        selectedAnswer={answerState.selectedAnswer}
         onQuit={handleFinishTest}
         currentQuestionIndex={currentIndex}
         totalQuestions={questionList.length}
         onQuestionSelect={(index) => setSelectedQuestion(String(index))}
         answeredQuestions={questionList.map((_, index) => {
-          const state = ({} as any)[`${selectedCategory}-${index}`]; // Replace with actual logic to get state
+          const key = `${selectedCategory}-${index}`;
+          const state = answeredQuestions[key];
           return {
             isAnswered: state?.isAnswered ?? false,
             isCorrect: state?.isCorrect ?? false
