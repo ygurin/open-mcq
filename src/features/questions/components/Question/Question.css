@@ -74,16 +74,6 @@
   margin: 20px 0;
 }
 
-.option-button {
-  padding: 12px 20px;
-  background-color: #f8f9fa;
-  border: 3px solid #dee2e6;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  text-align: left;
-}
-
 .option-button:hover {
   background-color: #e9ecef;
 }
@@ -311,7 +301,6 @@
   border-color: #c3e6cb;
 }
 
-/* Replace the existing flash animation with this new sparkle effect */
 @keyframes sparkle {
   0% {
     background: linear-gradient(to right, #ffffff, #ffffff);
@@ -334,17 +323,8 @@
   animation: sparkle 0.4s ease-out;
 }
 
-.flag-button {
-  background-color: #007bff !important; /* Same blue as other buttons */
-}
-
-.flag-button.flagged {
-  background-color: #ffc107 !important;
-  color: #000 !important;
-}
-
 .flag-button:hover:not(:disabled) {
-  background-color: #0056b3 !important; /* Same hover blue as other buttons */
+  background-color: #0056b3 !important;
 }
 
 .flag-button.flagged:hover:not(:disabled) {
@@ -357,7 +337,6 @@
   color: #000;
 }
 
-/* Disabled states for buttons */
 .answer-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
@@ -384,7 +363,7 @@
 }
 
 .flag-button {
-  background-color: #007bff !important; /* Same blue as other buttons */
+  background-color: #007bff !important;
 }
 
 .flag-button.flagged {
@@ -393,7 +372,7 @@
 }
 
 .flag-button:hover:not(:disabled) {
-  background-color: #0056b3 !important; /* Same hover blue as other buttons */
+  background-color: #0056b3 !important;
 }
 
 .flag-button.flagged:hover:not(:disabled) {
@@ -412,7 +391,6 @@
   }
 }
 
-/* Review mode styles */
 .option-button:disabled.review-mode {
   opacity: 0.6;
   cursor: not-allowed;
