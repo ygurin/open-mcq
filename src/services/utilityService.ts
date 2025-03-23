@@ -49,3 +49,43 @@ export function getQuestionKey(
 
   throw new Error("Invalid parameters for getQuestionKey");
 }
+
+/**
+ * Creates a question key for state management
+ */
+export function createQuestionKey(
+  category: string,
+  index: number | string
+): string {
+  return `${category}-${index}`;
+}
+
+/**
+ * Creates an exam question key
+ */
+export function createExamQuestionKey(index: number): string {
+  return `exam-${index}`;
+}
+
+/**
+ * Gets the default answer state
+ */
+export function getDefaultAnswerState() {
+  return {
+    isAnswered: false,
+    isCorrect: false,
+    selectedAnswer: undefined,
+  };
+}
+
+/**
+ * Ensures valid question index within range
+ */
+export function getValidQuestionIndex(
+  selectedIndex: string | number,
+  maxIndex: number
+): number {
+  const index =
+    typeof selectedIndex === "string" ? Number(selectedIndex) : selectedIndex;
+  return Math.min(Math.max(0, index), maxIndex - 1);
+}
