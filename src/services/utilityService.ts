@@ -1,3 +1,5 @@
+import { AppMode, AnswerState } from "../types";
+
 /**
  * Formats time in minutes:seconds format
  */
@@ -25,16 +27,16 @@ export function calculatePercentage(
 export function areAllQuestionsAnswered(
   answeredQuestions: { isAnswered: boolean }[]
 ): boolean {
-  return answeredQuestions.every((q) => q.isAnswered);
+  return answeredQuestions.every((q) => q?.isAnswered === true);
 }
 
 /**
  * Gets the question key for lookup in the answeredQuestions state
  */
 export function getQuestionKey(
-  mode: "exam" | "practice" | "category-test",
+  mode: Exclude<AppMode, null | "review">,
   examIndex?: number,
-  category?: string,
+  category?: string | null,
   questionIndex?: string
 ): string {
   if (mode === "exam" && examIndex !== undefined) {
@@ -70,7 +72,7 @@ export function createExamQuestionKey(index: number): string {
 /**
  * Gets the default answer state
  */
-export function getDefaultAnswerState() {
+export function getDefaultAnswerState(): AnswerState {
   return {
     isAnswered: false,
     isCorrect: false,
@@ -87,5 +89,15 @@ export function getValidQuestionIndex(
 ): number {
   const index =
     typeof selectedIndex === "string" ? Number(selectedIndex) : selectedIndex;
-  return Math.min(Math.max(0, index), maxIndex - 1);
+  return Math.max(0, Math.min(index, Math.max(0, maxIndex - 1)));
+}
+
+/**
+ * Safely access object property with null/undefined checks
+ */
+export function safeGet<T, K extends keyof T>(
+  obj: T | null | undefined,
+  key: K
+): T[K] | undefined {
+  return obj?.[key];
 }

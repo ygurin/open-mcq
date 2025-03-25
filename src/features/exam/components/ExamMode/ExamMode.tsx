@@ -5,6 +5,7 @@ import Question from '../../../questions/components/Question/Question';
 import ExamTimer from '../ExamTimer/ExamTimer';
 import ExamResults from '../ExamResults/ExamResults';
 import { EXAM_TIME_MINUTES } from '../../../../constants/constants';
+import { QuestionMode } from '../../../../types';
 
 interface ExamModeProps {
   getImage: (path: string) => string;
@@ -50,6 +51,9 @@ const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
     );
   }
 
+  // Determine the current mode (exam or review)
+  const currentMode: QuestionMode = isReview ? "review" : "exam";
+
   // Render question screen
   return (
     <div className="exam-mode-container">
@@ -60,10 +64,10 @@ const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
         />
       )}
       <Question
-        mode={isReview ? "review" : "exam"}
+        mode={currentMode}
         heading={currentQuestion.heading}
         ques={currentQuestion.question}
-        image={getImage(currentQuestion.image ?? '')}
+        image={currentQuestion.image ? getImage(currentQuestion.image) : undefined}
         q1={currentQuestion.questions[0]}
         q2={currentQuestion.questions[1]}
         q3={currentQuestion.questions[2]}

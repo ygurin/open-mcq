@@ -8,13 +8,14 @@ import ExamMode from './features/exam/components/ExamMode/ExamMode';
 import PracticeMode from './features/practice/components/PracticeMode/PracticeMode';
 import CategoryTest from './features/test/components/CategoryTest/CategoryTest';
 import { getAllQuestions, getCategories, getQuestions, getImage } from './services/questionService';
+import { AppMode } from './types';
 
 const App: React.FC = () => {
   const { mode, resetState, setMode } = useAppContext();
   const { initializeExamMode } = useExamMode();
 
   // Handle mode selection
-  const handleModeSelect = (newMode: 'practice' | 'category-test' | 'exam') => {
+  const handleModeSelect = (newMode: Exclude<AppMode, null | "review">) => {
     if (newMode === 'exam') {
       initializeExamMode(getAllQuestions());
     } else {

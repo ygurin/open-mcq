@@ -60,7 +60,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setTestResults(prev => ({
       ...prev,
       [category]: {
-        ...prev[category],
+        ...(prev[category] || {}),
         ...update
       }
     }));

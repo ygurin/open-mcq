@@ -27,6 +27,11 @@ export interface TestResults {
   };
 }
 
+export type AppMode = "practice" | "category-test" | "exam" | "review" | null;
+
+// Question mode type for more specific usage
+export type QuestionMode = Exclude<AppMode, null>;
+
 // Exam state
 export interface ExamState {
   questions: Item[];
@@ -40,7 +45,7 @@ export interface ExamState {
 
 // Application state
 export interface AppState {
-  mode: "practice" | "category-test" | "exam" | null;
+  mode: AppMode;
   selectedCategory: string | null;
   selectedQuestion: string;
   answeredQuestions: { [key: string]: AnswerState };
@@ -54,9 +59,6 @@ export interface AnsweredQuestion {
   isAnswered: boolean;
   isCorrect: boolean;
 }
-
-// Application modes
-export type AppMode = "practice" | "category-test" | "exam" | null;
 
 // Map of question keys to answer states
 export interface AnsweredQuestions {

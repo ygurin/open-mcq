@@ -1,6 +1,22 @@
 import React from 'react';
 import QuestionSelector from './QuestionSelector';
-import { QuestionNavProps } from '../../types';
+import { QuestionMode } from '../../../../types';
+
+interface QuestionNavProps {
+  mode: QuestionMode;
+  currentQuestion: number;
+  totalQuestions: number;
+  onQuestionSelect: (index: number) => void;
+  onNext: () => void;
+  onPrevious: () => void;
+  hasNext: boolean;
+  hasPrevious: boolean;
+  answeredQuestions: {
+    isAnswered: boolean;
+    isCorrect: boolean;
+  }[];
+  flaggedQuestions?: number[];
+}
 
 const QuestionNav: React.FC<QuestionNavProps> = ({
   currentQuestion,
@@ -12,7 +28,7 @@ const QuestionNav: React.FC<QuestionNavProps> = ({
   hasPrevious,
   answeredQuestions,
   mode,
-  flaggedQuestions = [], // Added default value
+  flaggedQuestions = []
 }) => {
   return (
     <div className="question-nav">

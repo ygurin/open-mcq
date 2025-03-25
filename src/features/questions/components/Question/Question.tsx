@@ -3,10 +3,11 @@ import Modal from '../../../../components/ui/Modal/Modal';
 import './Question.css';
 import QuestionNav from './QuestionNav';
 import { ShuffledQuestion, shuffleQuestionOptions } from '../../../../utils/shuffle';
-import QuestionOptions from './QuestionOptions'
+import QuestionOptions from './QuestionOptions';
+import { QuestionMode } from '../../../../types';
 
 interface QuestionProps {
-  mode: 'practice' | 'category-test' | 'exam' | 'review';
+  mode: QuestionMode;
   heading: string;
   ques: string;
   image?: string;
@@ -23,7 +24,7 @@ interface QuestionProps {
   onAnswerSelect: (selectedAnswer: string) => void;
   isCorrect: boolean | null;
   isAnswered: boolean;
-  selectedAnswer: string | undefined;
+  selectedAnswer?: string;
   onQuit: () => void;
   currentQuestionIndex: number;
   totalQuestions: number;
@@ -63,7 +64,7 @@ const Question: FC<QuestionProps> = ({
   answeredQuestions,
   correctAnswer,
   onFlagQuestion,
-  flaggedQuestions
+  flaggedQuestions = []
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'quit' | 'finish'>('quit'); 
@@ -266,12 +267,12 @@ const Question: FC<QuestionProps> = ({
                2. If a hint was used
                3. If in review mode (always)
             */}
-            {(mode === 'review' || !isCorrect || wasHintUsed) && explanation && (
+            {(mode === 'review' || isCorrect === false || wasHintUsed) && explanation ? (
               <div className="explanation">
                 <h4>Explanation:</h4>
                 <p>{explanation}</p>
               </div>
-            )}
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -295,13 +296,13 @@ const Question: FC<QuestionProps> = ({
           }
         </button>
 
-          {mode === 'exam' && (
+          {mode === 'exam' && onFlagQuestion && (
             <button 
-              onClick={() => onFlagQuestion?.(currentQuestionIndex)}
-              className={`answer-button flag-button ${flaggedQuestions?.includes(currentQuestionIndex) ? 'flagged' : ''}`}
+              onClick={() => onFlagQuestion(currentQuestionIndex)}
+              className={`answer-button flag-button ${flaggedQuestions.includes(currentQuestionIndex) ? 'flagged' : ''}`}
               disabled={isAnswered}
             >
-              {flaggedQuestions?.includes(currentQuestionIndex) ? 'Unflag' : 'Flag'}
+              {flaggedQuestions.includes(currentQuestionIndex) ? 'Unflag' : 'Flag'}
             </button>
           )}
         </div>
