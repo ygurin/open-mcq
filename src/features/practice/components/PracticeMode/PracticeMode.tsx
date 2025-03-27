@@ -21,7 +21,6 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
   const {
     selectedCategory,
     selectedQuestion,
-    answeredQuestions,
     setSelectedCategory,
     setSelectedQuestion
   } = useAppContext();

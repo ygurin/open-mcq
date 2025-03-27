@@ -10,7 +10,6 @@ import { createExamQuestionKey } from "../../../services/utilityService";
  */
 export function useExamMode() {
   const {
-    mode,
     exam,
     answeredQuestions,
     setMode,
