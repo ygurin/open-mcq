@@ -1,8 +1,9 @@
 import { FC } from 'react';
 import './ModeSelection.css';
+import { AppMode } from '../../../../types';
 
 interface ModeSelectionProps {
-  onSelectMode: (mode: 'practice' | 'category-test' | 'exam') => void;
+  onSelectMode: (mode: Exclude<AppMode, null | "review">) => void;
 }
 
 const ModeSelection: FC<ModeSelectionProps> = ({ onSelectMode }) => {

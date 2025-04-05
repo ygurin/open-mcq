@@ -1,11 +1,13 @@
 import { FC, useState, useEffect, useCallback } from 'react';
-import Modal from './../Modal/Modal';
+import Modal from '../../../../components/ui/Modal/Modal';
 import './Question.css';
 import QuestionNav from './QuestionNav';
-import { ShuffledQuestion, shuffleQuestionOptions } from '../utils/shuffle';
+import { ShuffledQuestion, shuffleQuestionOptions } from '../../../../utils/shuffle';
+import QuestionOptions from './QuestionOptions';
+import { QuestionMode } from '../../../../types';
 
 interface QuestionProps {
-  mode: 'practice' | 'category-test' | 'exam' | 'review';
+  mode: QuestionMode;
   heading: string;
   ques: string;
   image?: string;
@@ -22,7 +24,7 @@ interface QuestionProps {
   onAnswerSelect: (selectedAnswer: string) => void;
   isCorrect: boolean | null;
   isAnswered: boolean;
-  selectedAnswer: string | undefined;
+  selectedAnswer?: string;
   onQuit: () => void;
   currentQuestionIndex: number;
   totalQuestions: number;
@@ -62,7 +64,7 @@ const Question: FC<QuestionProps> = ({
   answeredQuestions,
   correctAnswer,
   onFlagQuestion,
-  flaggedQuestions
+  flaggedQuestions = []
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'quit' | 'finish'>('quit'); 
@@ -103,47 +105,6 @@ const Question: FC<QuestionProps> = ({
   }, [currentQuestionIndex, q1, q2, q3, q4, correctAnswer]);
 
   const areAllQuestionsAnswered = answeredQuestions.every(q => q.isAnswered);
-
-  const getButtonStyle = (answer: string) => {
-    let className = 'option-button';
-    
-    if (hintedAnswer === answer) {
-      className += ' hint-flash';
-    }
-    
-    // Special handling for review mode
-    if (mode === 'review') {
-      // Always highlight the correct answer in review mode
-      if (answer === correctAnswer) {
-        className += ' correct-answer';
-      }
-      
-      // If the user answered and selected this option (but it was wrong)
-      if (selectedAnswer === answer && answer !== correctAnswer && isAnswered) {
-        className += ' wrong-answer';
-      }
-    }
-    // Regular styling for other modes
-    else if (flaggedQuestions?.includes(currentQuestionIndex) && selectedAnswer === answer) {
-      className += ' flagged';
-    } else if (isAnswered) {
-      if (mode === 'exam') {
-        if (selectedAnswer === answer) {
-          className += ' exam-answered';
-        }
-      } else {
-        if (selectedAnswer === answer && isCorrect) {
-          className += ' correct';
-        } else if (selectedAnswer === answer && !isCorrect) {
-          className += ' incorrect';
-        }
-      }
-    } else if (selectedAnswer === answer) {
-      className += ' selected';
-    }
-    
-    return className;
-  };
 
   // Add keyboard navigation effect
   useEffect(() => {
@@ -239,18 +200,6 @@ const Question: FC<QuestionProps> = ({
     handleQuit
   ]);
 
-  const handleOptionSelect = (option: string) => {
-    // In review mode, prevent selecting answers for unanswered questions
-    if (mode === 'review' && !isAnswered) {
-      return;
-    }
-    
-    // Regular behavior for answered questions or non-review modes
-    if (!isAnswered || mode === 'practice') {
-      onAnswerSelect(option);
-    }
-  };
-
   return (
     <div className="Question">
       <h2 className="question-header">{heading}</h2>
@@ -282,19 +231,18 @@ const Question: FC<QuestionProps> = ({
               />
           </div>
       )}
-      <div className="question-options">
-          {shuffledOptions.options.map((option, index) => (
-              <button 
-                  key={index}
-                  className={getButtonStyle(option)}
-                  onClick={() => handleOptionSelect(option)}
-                  // Only disable if in review mode AND question wasn't previously answered
-                  disabled={mode === 'review' && !isAnswered}
-              >
-                  {option}
-              </button>
-          ))}
-      </div>
+      <QuestionOptions
+        options={shuffledOptions.options}
+        selectedAnswer={selectedAnswer}
+        isAnswered={isAnswered}
+        isCorrect={isCorrect}
+        correctAnswer={correctAnswer}
+        mode={mode}
+        onOptionSelect={onAnswerSelect}
+        flaggedQuestions={flaggedQuestions}
+        currentQuestionIndex={currentQuestionIndex}
+        hintedAnswer={hintedAnswer}
+      />
       <div className="answer-section">
         {/* Show feedback section in these cases:
            1. If the question is answered and not in exam mode
@@ -319,33 +267,42 @@ const Question: FC<QuestionProps> = ({
                2. If a hint was used
                3. If in review mode (always)
             */}
-            {(mode === 'review' || !isCorrect || wasHintUsed) && explanation && (
+            {(mode === 'review' || isCorrect === false || wasHintUsed) && explanation ? (
               <div className="explanation">
                 <h4>Explanation:</h4>
                 <p>{explanation}</p>
               </div>
-            )}
+            ) : null}
           </div>
         ) : null}
       </div>
       <div className="navigation-buttons">
         <div className="primary-buttons">
-          <button 
-            className="answer-button"
-            onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
-            // Disable submit button in review mode for unanswered questions
-            disabled={!selectedAnswer || isAnswered || (mode === 'review' && !isAnswered)}
-          >
-            {isAnswered ? 'Answer Submitted' : 'Submit Answer'}
-          </button>
+        <button 
+          className="answer-button"
+          onClick={() => selectedAnswer && onAnswerSubmit(selectedAnswer)}
+          disabled={
+            !selectedAnswer || 
+            isAnswered || 
+            (mode === 'review' && !isAnswered) ||
+            (mode === 'exam' && flaggedQuestions?.includes(currentQuestionIndex))
+          }
+        >
+          {isAnswered 
+            ? 'Answer Submitted' 
+            : mode === 'exam' && flaggedQuestions?.includes(currentQuestionIndex)
+              ? 'Question Flagged'
+              : 'Submit Answer'
+          }
+        </button>
 
-          {mode === 'exam' && (
+          {mode === 'exam' && onFlagQuestion && (
             <button 
-              onClick={() => onFlagQuestion?.(currentQuestionIndex)}
-              className={`answer-button flag-button ${flaggedQuestions?.includes(currentQuestionIndex) ? 'flagged' : ''}`}
+              onClick={() => onFlagQuestion(currentQuestionIndex)}
+              className={`answer-button flag-button ${flaggedQuestions.includes(currentQuestionIndex) ? 'flagged' : ''}`}
               disabled={isAnswered}
             >
-              {flaggedQuestions?.includes(currentQuestionIndex) ? 'Unflag' : 'Flag'}
+              {flaggedQuestions.includes(currentQuestionIndex) ? 'Unflag' : 'Flag'}
             </button>
           )}
         </div>

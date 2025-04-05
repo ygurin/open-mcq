@@ -1,13 +1,16 @@
 import React from 'react';
 import './QuestionSelector.css';
-import { AnsweredQuestion } from './types';
+import { QuestionMode } from '../../../../types';
 
 interface QuestionSelectorProps {
-  mode: 'practice' | 'category-test' | 'exam' | 'review';
+  mode: QuestionMode;
   currentQuestion: number;
   totalQuestions: number;
   onQuestionSelect: (index: number) => void;
-  answeredQuestions: AnsweredQuestion[];
+  answeredQuestions: {
+    isAnswered: boolean;
+    isCorrect: boolean;
+  }[];
   flaggedQuestions?: number[];
 }
 

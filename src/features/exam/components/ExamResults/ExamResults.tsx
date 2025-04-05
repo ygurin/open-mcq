@@ -1,6 +1,6 @@
 import React from 'react';
 import './ExamResults.css';
-import { EXAM_TIME_MINUTES } from '../../constants';
+import { EXAM_TIME_MINUTES } from '../../../../constants/constants';
 
 interface ExamResultsProps {
   correctAnswers: number;
