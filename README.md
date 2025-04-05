@@ -10,6 +10,10 @@ With Open MCQ, you can practice test questions in various modes and prepare for 
 
 You can easily [use your own data](#using-your-own-data) to customize the platform for any subject or exam preparation needs.
 
+<p align="center">
+  <img src="/demo.gif" alt="Open MCQ Demo" width="720"/>
+</p>
+
 ## Quick Start
 
 1. Clone the repository
