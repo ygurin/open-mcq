@@ -84,8 +84,7 @@ export function useExamMode() {
 
     const timeTaken = exam.startTime
       ? Math.floor((Date.now() - exam.startTime) / 1000)
-      : 45 * 60;
-
+      : EXAM_TIME_MINUTES * 60;
     return {
       correctAnswers,
       totalQuestions: 40,
