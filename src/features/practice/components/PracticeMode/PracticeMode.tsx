@@ -45,7 +45,7 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
           {categoryList.map(categ => (
             <CategoryButton
               key={categ}
-              getCategory={(e) => {
+              onSelectCategory={(e) => {
                 const newCategory = e.currentTarget.value;
                 const questions = getQuestions(newCategory);
                 

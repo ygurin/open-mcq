@@ -69,7 +69,7 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
             return (
               <CategoryButton
                 key={categ}
-                getCategory={(e) => {
+                onSelectCategory={(e) => {
                   const newCategory = e.currentTarget.value;
                   const questions = getQuestions(newCategory);
                   
