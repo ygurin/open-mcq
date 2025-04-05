@@ -6,6 +6,7 @@ import ExamTimer from '../ExamTimer/ExamTimer';
 import ExamResults from '../ExamResults/ExamResults';
 import { EXAM_TIME_MINUTES } from '../../../../constants/constants';
 import { QuestionMode } from '../../../../types';
+import { createExamQuestionKey } from '../../../../services/utilityService';
 
 interface ExamModeProps {
   getImage: (path: string) => string;
@@ -32,7 +33,7 @@ const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
 
   const { questions, currentQuestionIndex, isComplete, isReview } = exam;
   const currentQuestion = questions[currentQuestionIndex];
-  const questionKey = `exam-${currentQuestionIndex}`;
+  const questionKey = createExamQuestionKey(currentQuestionIndex);
   const answerState = answeredQuestions[questionKey];
 
   // Render exam results screen
@@ -87,7 +88,7 @@ const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
         totalQuestions={questions.length}
         onQuestionSelect={handleExamQuestionChange}
         answeredQuestions={questions.map((_, index) => {
-          const state = answeredQuestions[`exam-${index}`];
+          const state = answeredQuestions[createExamQuestionKey(index)];
           return {
             isAnswered: state?.isAnswered ?? false,
             isCorrect: state?.isCorrect ?? false
