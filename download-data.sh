@@ -3,7 +3,7 @@
 # Define data sources in arrays
 # Format: "Name|URL|ZipName"
 declare -a DATA_SOURCES=(
-    "Driver Theory Test|https://www.dropbox.com/scl/fi/d2i2x9kj6tss9x8tvltr9/open-mcq-data.zip?rlkey=edhaxy9gamrss60kauymen6nq&st=gtk17zyo&dl=0|open-mcq"
+    "Driver Theory Test (2019)|https://www.dropbox.com/scl/fi/d2i2x9kj6tss9x8tvltr9/open-mcq-data.zip?rlkey=edhaxy9gamrss60kauymen6nq&st=gtk17zyo&dl=0|open-mcq"
     "Wildlife|https://www.dropbox.com/scl/fi/69agh49q7hamoylgd828a/wildlife-data.zip?rlkey=6b8kboedgf9x3tjeejijdotdb&st=db9zfpdk&dl=0|wildlife-data"
     # Add more data sources here in the same format
 )
