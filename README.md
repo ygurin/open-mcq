@@ -4,7 +4,11 @@
 
 <h1 align="center">Open MCQ</h1>
 
-An open-source multiple choice question testing platform built with React and TypeScript. Features practice mode, category tests, and timed exams.
+An open-source multiple-choice question platform built with React. Open MCQ provides a free alternative to expensive commercial testing applications like [The Official Driver Theory Test Online](https://www.officialdttonline.ie/) and other paid alternatives.
+
+With Open MCQ, you can practice test questions in various modes and prepare for exams in a user-friendly environment. Education should be free and accessible to everyone which drove the development of this tool.
+
+You can easily [use your own data](#using-your-own-data) to customize the platform for any subject or exam preparation needs.
 
 ## Quick Start
 
@@ -28,6 +32,22 @@ chmod +x download-data.sh
 ./download-data.sh
 ```
 
+Select the dataset:
+```text
+Welcome to the Open MCQ Data Installer
+This script will download and install question datasets for Open MCQ
+WARNING: This will replace any existing data files and images
+
+==========================================
+         Open MCQ Data Installer
+==========================================
+Please select a dataset to download:
+
+1) Driver Theory Test (2019) Questions
+2) Wildlife Questions
+3) Exit
+```
+
 4. Start the development server
 
 ```bash
@@ -37,10 +57,9 @@ npm run dev
 ## Features
 
 - **Practice Mode**: Study questions with instant feedback and explanations
-- **Category Test**: Take tests in specific categories with scoring
+- **Category Test Mode**: Take tests in specific categories with scoring
 - **Exam Mode**: 45-minute timed exam with 40 random questions
   - **Question Flagging**: Mark questions for review
-- **Progress Tracking**: Track your performance across categories
 
 ## Keyboard Navigation
 
