@@ -373,7 +373,13 @@ const Question: FC<QuestionProps> = ({
           onClick={handleQuit}
           className="nav-button quit-button"
         >
-          {mode === 'exam' ? 'Quit Exam' : 'Quit'}
+          {
+            mode === 'exam' 
+              ? 'Quit Exam' 
+              : mode === 'review' 
+                ? 'Back to Results' 
+                : 'Quit'
+          }
         </button>
       </div>
       <Modal 

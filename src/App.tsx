@@ -53,10 +53,12 @@ const App: React.FC = () => {
     );
   }
 
-  if (mode === 'category-test') {
+  if (mode === 'category-test' || mode === 'review') {
     return (
-      <div className="App category-test-mode">
-        <div className="mode-indicator">Category Test Mode</div>
+      <div className={`App ${mode === 'review' ? 'review-mode' : 'category-test-mode'}`}>
+        <div className="mode-indicator">
+          {mode === 'review' ? 'Review Mode' : 'Category Test Mode'}
+        </div>
         <CategoryTest 
           getCategories={getCategories}
           getQuestions={getQuestions}

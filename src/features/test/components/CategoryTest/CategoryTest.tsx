@@ -26,7 +26,8 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
     showResults,
     answeredQuestions,
     setSelectedCategory,
-    setSelectedQuestion
+    setSelectedQuestion,
+    mode
   } = useAppContext();
 
   const {
@@ -58,7 +59,10 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
       <div>
         <h2>Select a Category</h2>
         <p className="test-mode-info">
-          Category Test Mode: Your answers will be scored and you'll receive a final result
+          {mode === 'review' 
+            ? 'Review Mode: Review your incorrect answers' 
+            : 'Category Test Mode: Your answers will be scored and you\'ll receive a final result'
+          }
         </p>
         <div className="category-list">
           {categoryList.map(categ => {
@@ -115,10 +119,12 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
     selectedAnswer: undefined
   };
 
+  const isReviewMode = mode === 'review';
+  
   return (
     <div className="question-container">
       <Question
-        mode="category-test"
+        mode={isReviewMode ? 'review' : 'category-test'}
         heading={currentQuestion.heading}
         ques={currentQuestion.question}
         image={currentQuestion.image ? getImage(currentQuestion.image) : undefined}
@@ -126,7 +132,7 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
         q2={currentQuestion.questions[1]}
         q3={currentQuestion.questions[2]}
         q4={currentQuestion.questions[3]}
-        explanation={undefined} // No explanation in test mode
+        explanation={isReviewMode ? currentQuestion.explanation : undefined}
         onNext={handleNext}
         onPrevious={handlePrevious}
         hasNext={currentIndex < questionList.length - 1}

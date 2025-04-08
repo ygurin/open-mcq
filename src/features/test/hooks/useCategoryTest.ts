@@ -12,6 +12,8 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
     answeredQuestions,
     selectedQuestion,
     testResults,
+    mode,
+    setMode,
     setShowResults,
     updateAnsweredQuestion,
     updateTestResult,
@@ -30,6 +32,9 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
     (selectedAnswer: string) => {
       if (!selectedCategory) return;
 
+      // In review mode, don't allow answer selection
+      if (mode === "review") return;
+
       const questionKey = `${selectedCategory}-${selectedQuestion}`;
       const existingState = answeredQuestions[questionKey];
 
@@ -45,6 +50,7 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
       selectedQuestion,
       answeredQuestions,
       updateAnsweredQuestion,
+      mode,
     ]
   );
 
@@ -54,6 +60,9 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
   const handleAnswerSubmit = useCallback(
     (selectedAnswer: string) => {
       if (!selectedCategory) return;
+
+      // In review mode, don't allow answer submission
+      if (mode === "review") return;
 
       const questions = getQuestions(selectedCategory);
       const currentQuestion = questions[Number(selectedQuestion)];
@@ -93,6 +102,7 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
       updateAnsweredQuestion,
       testResults,
       updateTestResult,
+      mode,
     ]
   );
 
@@ -100,25 +110,41 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
    * Finish the test and show results
    */
   const handleFinishTest = useCallback(() => {
-    setShowResults(true);
-  }, [setShowResults]);
+    // If in review mode, go back to the results screen
+    if (mode === "review") {
+      setShowResults(true);
+    } else {
+      // If in regular test mode, just show results
+      setShowResults(true);
+    }
+  }, [setShowResults, mode]);
 
   /**
    * Review wrong answers
    */
   const reviewWrongAnswers = useCallback(
     (category: string, wrongAnswers: string[]) => {
+      if (wrongAnswers.length === 0) return;
+
       const questions = getQuestions(category);
       const firstWrongQuestionIndex = questions.findIndex((q) =>
         wrongAnswers.includes(q.id)
       );
 
+      if (firstWrongQuestionIndex === -1) return;
+
       setShowResults(false);
+      setMode("review");
       setSelectedCategory(category);
       setSelectedQuestion(String(Math.max(0, firstWrongQuestionIndex)));
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [getQuestions, setShowResults, setSelectedCategory]
+    [
+      getQuestions,
+      setShowResults,
+      setMode,
+      setSelectedCategory,
+      setSelectedQuestion,
+    ]
   );
 
   /**
