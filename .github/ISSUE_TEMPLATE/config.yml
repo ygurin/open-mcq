@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Open MCQ Discussions
+    url: https://github.com/ygurin/open-mcq/discussions
+    about: Please ask and answer questions here.
+  - name: Open MCQ Documentation
+    url: https://github.com/ygurin/open-mcq#readme
+    about: Check if your question is addressed in the documentation.
