@@ -1,4 +1,3 @@
-// src/Modal/Modal.tsx
 import React from 'react';
 import './Modal.css';
 
@@ -7,7 +6,7 @@ interface ModalProps {
   onClose: () => void;
   onConfirm: () => void;
   message?: string;
-  title?: string;  // Add this line
+  title?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({ 
@@ -15,7 +14,7 @@ const Modal: React.FC<ModalProps> = ({
   onClose, 
   onConfirm,
   message = "Are you sure you want to quit to the menu?",
-  title = "Quit to Menu" // Default title
+  title = "Quit to Menu"
 }) => {
   if (!isOpen) return null;
 

@@ -1,7 +1,6 @@
 import React, { createContext, useState, ReactNode } from 'react';
 import { AppMode, AnsweredQuestions, TestResults, ExamState } from '../types';
 
-// Define the shape of our context
 export interface AppContextType {
   // State
   mode: AppMode;
@@ -30,12 +29,9 @@ export interface AppContextType {
   resetState: () => void;
 }
 
-// Create the context with undefined as initial value
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 
-// Context provider component
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Initialize all state from App.tsx
   const [mode, setMode] = useState<AppMode>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedQuestion, setSelectedQuestion] = useState("0");
@@ -77,7 +73,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
   };
 
-  // Function to reset all state
   const resetState = () => {
     setMode(null);
     setSelectedCategory(null);
@@ -88,9 +83,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setExam(null);
   };
 
-  // Provide all state and functions
+  // all state and functions
   const contextValue: AppContextType = {
-    // State
     mode,
     selectedCategory,
     selectedQuestion,
@@ -113,7 +107,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     updateTestResult,
     updateExam,
     
-    // Reset
     resetState
   };
 
