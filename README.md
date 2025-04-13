@@ -120,6 +120,16 @@ npm run build
 
 The build output will be in the `dist` directory.
 
+## Disclaimer
+
+This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors be liable for any claim, damages, or other liability arising from the use of this software.
+
+Use at your own risk.
+
 ## License
 
-MIT License - feel free to use and modify for your own projects.
+This project is licensed under the [GNU Affero General Public License v3.0 or later](https://www.gnu.org/licenses/agpl-3.0.html).
+
+You are free to use, modify, and redistribute this project under the terms of the AGPL-3.0-or-later license. If you run a modified version over a network (such as a web app), you must also make the source code for that version available to users.
+
+Note: This license applies retroactively to all past versions of the code in this repository, even if early commits did not contain a license file.
