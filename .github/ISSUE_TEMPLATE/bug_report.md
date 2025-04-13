@@ -28,7 +28,7 @@ assignees: ''
 - Browser & version: 
 - OS & version: 
 - Device: 
-- Open MCQ version: 
+- Open MCQ version/Commit SHA: 
 
 ## Additional Context
 <!-- Add any other relevant information about the problem here -->
