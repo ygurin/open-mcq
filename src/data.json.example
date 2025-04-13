@@ -1,120 +1,32 @@
 [
-  {
-    "question": "What should a driver do if involved in an incident where they feel it was the fault of another driver?",
-    "heading": "Accidents",
-    "explanation": "If you are involved in any sort of incident with another motorist, you should always exchange insurance details with the other driver and take note of the other vehicle’s make and model, colour and registration number. Report the incident to the Gardaí. In a collision where nobody is injured and there is only minor damage to vehicles, the vehicles should be moved to the side of the road to ensure that they do not cause an obstruction or endanger other road users.",
-    "questions": [
-      "Drive on to the nearest Garda Station and report the incident.",
-      "Stop and exchange licence details with the other person involved.",
-      "Carry on if they think there was no damage to their vehicle.",
-      "Stop immediately and exchange particulars with the other person involved."
-    ],
-    "answer": "Stop immediately and exchange particulars with the other person involved.",
-    "id": "ABMW0612R",
-    "update": "2019-03-31"
-  },
-  {
-    "question": "If a driver is involved in a collision with an uninsured visiting motorist, where nobody is injured, who should it be reported to?",
-    "heading": "Accidents",
-    "explanation": "If you are involved in any type of collision, you should always report it to the Gardaí and to your insurance company.",
-    "questions": [
-      "The Department of Foreign Affairs.",
-      "The Irish Insurance Federation.",
-      "The local Motor Taxation Office.",
-      "The driver’s insurance company and the Gardaí."
-    ],
-    "answer": "The driver’s insurance company and the Gardaí.",
-    "id": "ABMW0623R",
-    "update": "2019-03-31"
-  },
-  {
-    "question": "What should the car driver do in this situation?",
-    "heading": "Alert Driving and Consideration",
-    "explanation": "When you are turning right from a major road to a minor road, you must yield to oncoming traffic, and you should proceed only when it is safe to do so.",
-    "questions": [
-      "The driver may drive around the corner before the cyclist.",
-      "The driver must allow the motorcyclist to proceed.",
-      "The driver must stop and yield right of way to the other road users.",
-      "The driver must allow the cyclist to proceed."
-    ],
-    "answer": "The driver must allow the cyclist to proceed.",
-    "id": "ABMW0225R",
-    "update": "2019-04-01",
-    "image": "https://media.imagitechlearning.co.uk/images/theory/Ireland/ABMW0225R.png"
-  },
-  {
-    "question": "When approaching the pedestrian crossing, what should the driver do in this situation?",
-    "heading": "Alert Driving and Consideration",
-    "explanation": "When there are pedestrians at or near a zebra crossing, you should slow down on approach and be prepared to stop to allow the pedestrians to cross safely.",
-    "questions": [
-      "Continue to drive on fast because the pedestrians have to wait.",
-      "Maintain speed, because the pedestrians have not stepped on to the crossing.",
-      "Sound the horn to draw attention to your vehicle and continue to drive at the same speed.",
-      "Slow down in good time and be prepared to stop."
-    ],
-    "answer": "Slow down in good time and be prepared to stop.",
-    "id": "ABMW0227R",
-    "update": "2019-04-01",
-    "image": "https://media.imagitechlearning.co.uk/images/theory/Ireland/ABMW0227.jpg"
-  },
-  {
-    "question": "What should a driver be alert to in this area?",
-    "heading": "Alert Driving and Consideration",
-    "explanation": "When driving in a built-up area, you should drive with caution and be prepared to react to pedestrians crossing from between parked vehicles.",
-    "questions": [
-      "Parked vehicles may have trailers attached.",
-      "Pedestrians may be hitch-hiking.",
-      "There may be refuse bins between the parked vehicles.",
-      "Pedestrians may cross between parked cars."
-    ],
-    "answer": "Pedestrians may cross between parked cars.",
-    "id": "ABMW0231R",
-    "update": "2019-04-01",
-    "image": "https://media.imagitechlearning.co.uk/images/theory/Ireland/ABMW0231.jpg"
-  },
-  {
-    "question": "What should the driver do in this situation?",
-    "heading": "Alert Driving and Consideration",
-    "explanation": "On approaching a crossroads you should check the road sign to see which traffic has priority and be prepared for emerging traffic from either side. Vehicles do not have an automatic right of way on the road. The overriding rule is to proceed with caution in all circumstances. .",
-    "questions": [
-      "The cyclist must allow the other vehicles to proceed.",
-      "The cyclist must proceed first.",
-      "The driver must allow the van to cross the junction.",
-      "The driver may cross first with caution."
-    ],
-    "answer": "The driver may cross first with caution.",
-    "id": "ABMW0233R",
-    "update": "2019-04-01",
-    "image": "https://media.imagitechlearning.co.uk/images/theory/Ireland/ABMW0233.png"
-  },
-  {
-    "question": "What should the driver do in this situation?",
-    "heading": "Alert Driving and Consideration",
-    "explanation": "When you are turning right from a major road to a minor road, you must yield to oncoming traffic and proceed only when it is safe to do so. You should also be aware that there might be emerging from the minor road.",
-    "questions": [
-      "The driver must allow the red car to proceed.",
-      "The driver may proceed first.",
-      "The driver is not allowed to turn right.",
-      "The driver must allow the blue truck to proceed."
-    ],
-    "answer": "The driver must allow the blue truck to proceed.",
-    "id": "ABMW0235R",
-    "update": "2019-04-01",
-    "image": "https://media.imagitechlearning.co.uk/images/theory/Ireland/ABMW0235.png"
-  },
-  {
-    "question": "What should a driver be conscious of in this situation?",
-    "heading": "Alert Driving and Consideration",
-    "explanation": "You should always read the road ahead and be prepared to react to the changing traffic situation. In particular, you should be aware that pedestrians might emerge at the rear of the bus. In this situation you should also look out for pedestrians making their way towards the waiting bus.",
-    "questions": [
-      "Traffic emerging from the street on the left.",
-      "The bus driver will always signal before moving off.",
-      "The bus may start to reverse.",
-      "People crossing the street at the rear of the bus."
-    ],
-    "answer": "People crossing the street at the rear of the bus.",
-    "id": "ABMW0236R",
-    "update": "2019-04-01",
-    "image": "https://media.imagitechlearning.co.uk/images/theory/Ireland/ABMW0236.png"
-  }
+    {
+        "question": "Which adaptation helps camels survive long periods without water in the desert?",
+        "heading": "Desert",
+        "explanation": "Camels have several adaptations for desert life, but their humps specifically store fat that can be metabolized for both energy and water when resources are scarce. Their specialized kidneys and intestines minimize water loss, and they can tolerate body temperature fluctuations and dehydration levels that would be fatal to most mammals.",
+        "questions":
+        [
+            "Thick fur that insulates against heat",
+            "Humps that store fat which can be metabolized for water",
+            "Ability to hibernate during hot months",
+            "Translucent skin that reflects sunlight"
+        ],
+        "answer": "Humps that store fat which can be metabolized for water",
+        "id": "DSRT0001",
+        "update": "2025-03-12"
+    },
+    {
+        "question": "Which desert animal can go its entire life without drinking water?",
+        "heading": "Desert",
+        "explanation": "Kangaroo rats have remarkable adaptations that allow them to survive without ever drinking water. Their kidneys concentrate urine to minimize water loss, they produce very dry feces, and they get most of their water from metabolizing seeds they eat. Additionally, they are nocturnal to avoid water loss during hot daylight hours and have specialized nasal passages that reduce water loss during respiration.",
+        "questions":
+        [
+            "Gila monster",
+            "Kangaroo rat",
+            "Desert tortoise",
+            "Cactus wren"
+        ],
+        "answer": "Kangaroo rat",
+        "id": "DSRT0002",
+        "update": "2025-03-12"
+    }
 ]
