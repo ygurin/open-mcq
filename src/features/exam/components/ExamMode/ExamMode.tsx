@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppContext } from '../../../../hooks/useAppContext';
 import { useExamMode } from '../../hooks/useExamMode';
+import { usePreventRefresh } from '../../../../hooks/usePreventRefresh';
 import Question from '../../../questions/components/Question/Question';
 import ExamTimer from '../ExamTimer/ExamTimer';
 import ExamResults from '../ExamResults/ExamResults';
@@ -15,6 +16,7 @@ interface ExamModeProps {
 const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
   const { exam, answeredQuestions, showResults } = useAppContext();
   const {
+    recalculateRemainingTime,
     handleExamTimeUp,
     handleExamAnswerSelection,
     handleExamAnswerSubmit,
@@ -28,10 +30,21 @@ const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
     handleBackToMenu,
     handleFlagQuestion
   } = useExamMode();
+  
+  // Only prevent refresh when there's an active exam and we're not in results view
+  const shouldPreventRefresh = !!exam && !showResults;
+  usePreventRefresh(shouldPreventRefresh, 'You have an active exam in progress. Are you sure you want to leave this page?');
+  
+  // Recalculate remaining time when restoring from localStorage
+  useEffect(() => {
+    if (exam?.startTime) {
+      recalculateRemainingTime();
+    }
+  }, []);
 
   if (!exam) return null;
 
-  const { questions, currentQuestionIndex, isComplete, isReview } = exam;
+  const { questions, currentQuestionIndex, isComplete, isReview, timeRemaining } = exam;
   const currentQuestion = questions[currentQuestionIndex];
   const questionKey = createExamQuestionKey(currentQuestionIndex);
   const answerState = answeredQuestions[questionKey];
@@ -62,6 +75,7 @@ const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
         <ExamTimer
           onTimeUp={handleExamTimeUp}
           totalMinutes={EXAM_TIME_MINUTES}
+          initialTimeLeft={timeRemaining}
         />
       )}
       <Question
