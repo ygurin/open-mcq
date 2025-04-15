@@ -4,10 +4,18 @@ import './ExamTimer.css';
 interface ExamTimerProps {
   onTimeUp: () => void;
   totalMinutes: number;
+  initialTimeLeft?: number;
 }
 
-const ExamTimer: React.FC<ExamTimerProps> = ({ onTimeUp, totalMinutes }) => {
-  const [timeLeft, setTimeLeft] = useState(totalMinutes * 60);
+const ExamTimer: React.FC<ExamTimerProps> = ({ 
+  onTimeUp, 
+  totalMinutes,
+  initialTimeLeft 
+}) => {
+  // Use initialTimeLeft if provided, otherwise calculate from totalMinutes
+  const [timeLeft, setTimeLeft] = useState(
+    initialTimeLeft !== undefined ? initialTimeLeft : totalMinutes * 60
+  );
 
   useEffect(() => {
     if (timeLeft <= 0) {

@@ -26,6 +26,7 @@ export function useExamMode() {
   const initializeExamMode = useCallback(
     (questions: Item[]) => {
       const shuffledQuestions = shuffleArray(questions).slice(0, 40);
+      const startTime = Date.now();
 
       setMode("exam");
       setExam({
@@ -33,12 +34,41 @@ export function useExamMode() {
         currentQuestionIndex: 0,
         timeRemaining: EXAM_TIME_MINUTES * 60,
         isComplete: false,
-        startTime: Date.now(),
+        startTime,
         flaggedQuestions: [],
       });
     },
     [setMode, setExam]
   );
+
+  /**
+   * Recalculates remaining time based on saved startTime
+   * Called when restoring an exam session from localStorage
+   */
+  const recalculateRemainingTime = useCallback(() => {
+    if (!exam?.startTime) return;
+
+    const totalAllowedTimeMs = EXAM_TIME_MINUTES * 60 * 1000;
+    const elapsedTimeMs = Date.now() - exam.startTime;
+
+    // Calculate remaining time in milliseconds, ensuring it doesn't go negative
+    const remainingTimeMs = Math.max(0, totalAllowedTimeMs - elapsedTimeMs);
+
+    // Convert to seconds and update the exam state
+    const remainingTimeSec = Math.ceil(remainingTimeMs / 1000);
+
+    // time is up, complete the exam
+    if (remainingTimeSec <= 0) {
+      updateExam({
+        isComplete: true,
+        timeRemaining: 0,
+      });
+      setShowResults(true);
+    } else {
+      // update with the calculated remaining time
+      updateExam({ timeRemaining: remainingTimeSec });
+    }
+  }, [exam, updateExam, setShowResults]);
 
   /**
    * Handles flagging/unflagging a question
@@ -206,6 +236,7 @@ export function useExamMode() {
 
   return {
     initializeExamMode,
+    recalculateRemainingTime,
     handleExamTimeUp,
     handleFlagQuestion,
     calculateExamResults,
