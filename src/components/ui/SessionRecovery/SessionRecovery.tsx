@@ -25,15 +25,43 @@ const SessionRecovery: React.FC<SessionRecoveryProps> = ({ onDismiss }) => {
     // Try to load saved state
     const savedState = loadAppState();
     
-    // If we have saved state, show the recovery prompt
-    if (savedState && savedState.mode) {
+    // Determine if we should show the recovery prompt
+    const shouldShowRecovery = savedState && shouldRecoverSession(savedState);
+    
+    if (shouldShowRecovery) {
       setSessionData(savedState);
       setIsVisible(true);
     } else {
-      // If no state to recover, immediately call onDismiss to proceed with normal app flow
+      // If no state to recover or we shouldn't recover, immediately call onDismiss
       onDismiss();
     }
   }, [onDismiss]);
+
+  // Determine if we should recover the session based on its state
+  const shouldRecoverSession = (state: Partial<AppState>): boolean => {
+    // Don't recover if there's no mode
+    if (!state.mode) return false;
+    
+    // Don't recover if in review mode
+    if (state.mode === 'review') return false;
+    
+    // For practice mode, only recover if a category is selected
+    if (state.mode === 'practice') {
+      return !!state.selectedCategory;
+    }
+    
+    // For category-test mode, only recover if a category is selected and not showing results
+    if (state.mode === 'category-test') {
+      return !!state.selectedCategory && !state.showResults;
+    }
+    
+    // For exam mode, only recover if not completed
+    if (state.mode === 'exam' && state.exam) {
+      return !state.exam.isComplete && !state.exam.isReview;
+    }
+    
+    return true;
+  };
 
   const handleRestore = () => {
     if (!sessionData) {

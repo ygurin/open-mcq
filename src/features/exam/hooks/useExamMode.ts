@@ -4,6 +4,7 @@ import { shuffleArray } from "../../../utils/shuffle";
 import { EXAM_TIME_MINUTES } from "../../../constants/constants";
 import { Item } from "../../../types";
 import { createExamQuestionKey } from "../../../services/utilityService";
+import { markSessionCompleted } from "../../../services/localStorageService";
 
 /**
  * Hook for managing exam mode functionality
@@ -53,7 +54,7 @@ export function useExamMode() {
   const recalculateRemainingTime = useCallback(() => {
     if (!exam?.startTime) return;
 
-    // exam completed, don't recalculate time
+    // If exam is already completed, don't recalculate time
     if (exam.isComplete) return;
 
     const totalAllowedTimeMs = EXAM_TIME_MINUTES * 60 * 1000;
@@ -69,6 +70,9 @@ export function useExamMode() {
     if (remainingTimeSec <= 0) {
       const completedTime = Date.now();
       finalExamTimeRef.current = completedTime - exam.startTime;
+
+      // Mark the exam as completed in localStorage
+      markSessionCompleted("exam", exam.startTime.toString());
 
       updateExam({
         isComplete: true,
@@ -111,6 +115,11 @@ export function useExamMode() {
 
     const completedTime = Date.now();
     finalExamTimeRef.current = completedTime - (exam.startTime || 0);
+
+    // Mark the exam as completed in localStorage
+    if (exam.startTime) {
+      markSessionCompleted("exam", exam.startTime.toString());
+    }
 
     updateExam({
       isComplete: true,
@@ -252,6 +261,11 @@ export function useExamMode() {
 
     const completedTime = Date.now();
     finalExamTimeRef.current = completedTime - (exam.startTime || 0);
+
+    // Mark the exam as completed in localStorage
+    if (exam.startTime) {
+      markSessionCompleted("exam", exam.startTime.toString());
+    }
 
     updateExam({
       isComplete: true,

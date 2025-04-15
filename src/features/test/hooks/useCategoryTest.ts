@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useAppContext } from "../../../hooks/useAppContext";
 import { useQuestionNavigation } from "../../../hooks/useQuestionNavigation";
 import { Item } from "../../../types";
+import { markSessionCompleted } from "../../../services/localStorageService";
 
 /**
  * Hook for managing category test functionality
@@ -114,10 +115,14 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
     if (mode === "review") {
       setShowResults(true);
     } else {
-      // If in regular test mode, just show results
+      // If in regular test mode, show results and mark as completed
+      if (selectedCategory) {
+        // Mark this category test as completed in localStorage
+        markSessionCompleted("test", selectedCategory);
+      }
       setShowResults(true);
     }
-  }, [setShowResults, mode]);
+  }, [setShowResults, mode, selectedCategory]);
 
   /**
    * Review wrong answers
