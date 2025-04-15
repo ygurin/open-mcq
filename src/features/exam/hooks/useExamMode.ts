@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useAppContext } from "../../../hooks/useAppContext";
 import { shuffleArray } from "../../../utils/shuffle";
 import { EXAM_TIME_MINUTES } from "../../../constants/constants";
@@ -20,6 +20,9 @@ export function useExamMode() {
     resetState,
   } = useAppContext();
 
+  // Store a reference to the final exam time to ensure it doesn't change
+  const finalExamTimeRef = useRef<number | undefined>(undefined);
+
   /**
    * Initializes exam mode with shuffled questions
    */
@@ -27,6 +30,7 @@ export function useExamMode() {
     (questions: Item[]) => {
       const shuffledQuestions = shuffleArray(questions).slice(0, 40);
       const startTime = Date.now();
+      finalExamTimeRef.current = undefined;
 
       setMode("exam");
       setExam({
@@ -36,6 +40,7 @@ export function useExamMode() {
         isComplete: false,
         startTime,
         flaggedQuestions: [],
+        completedTime: undefined,
       });
     },
     [setMode, setExam]
@@ -48,6 +53,9 @@ export function useExamMode() {
   const recalculateRemainingTime = useCallback(() => {
     if (!exam?.startTime) return;
 
+    // exam completed, don't recalculate time
+    if (exam.isComplete) return;
+
     const totalAllowedTimeMs = EXAM_TIME_MINUTES * 60 * 1000;
     const elapsedTimeMs = Date.now() - exam.startTime;
 
@@ -59,9 +67,13 @@ export function useExamMode() {
 
     // time is up, complete the exam
     if (remainingTimeSec <= 0) {
+      const completedTime = Date.now();
+      finalExamTimeRef.current = completedTime - exam.startTime;
+
       updateExam({
         isComplete: true,
         timeRemaining: 0,
+        completedTime,
       });
       setShowResults(true);
     } else {
@@ -95,10 +107,16 @@ export function useExamMode() {
    * Handles time up event in exam
    */
   const handleExamTimeUp = useCallback(() => {
-    if (exam) {
-      updateExam({ isComplete: true });
-      setShowResults(true);
-    }
+    if (!exam || exam.isComplete) return;
+
+    const completedTime = Date.now();
+    finalExamTimeRef.current = completedTime - (exam.startTime || 0);
+
+    updateExam({
+      isComplete: true,
+      completedTime,
+    });
+    setShowResults(true);
   }, [exam, updateExam, setShowResults]);
 
   /**
@@ -112,15 +130,42 @@ export function useExamMode() {
       0
     );
 
-    const timeTaken = exam.startTime
-      ? Math.floor((Date.now() - exam.startTime) / 1000)
-      : EXAM_TIME_MINUTES * 60;
+    // Calculate time taken using a consistent approach that doesn't change after exam completion
+    let timeTaken: number;
+
+    // Use the stored final time if available
+    if (finalExamTimeRef.current !== undefined) {
+      timeTaken = Math.floor(finalExamTimeRef.current / 1000);
+    }
+    // Or use the completedTime from exam state if available
+    else if (exam.completedTime && exam.startTime) {
+      const examDuration = exam.completedTime - exam.startTime;
+      finalExamTimeRef.current = examDuration; // Store for future use
+      timeTaken = Math.floor(examDuration / 1000);
+    }
+    // Fallback for backward compatibility
+    else if (exam.isComplete && exam.startTime) {
+      const examDuration = Date.now() - exam.startTime;
+      finalExamTimeRef.current = examDuration; // Store for future use
+
+      // Also update the exam state with the completedTime for persistence
+      if (!exam.completedTime) {
+        updateExam({ completedTime: Date.now() });
+      }
+
+      timeTaken = Math.floor(examDuration / 1000);
+    }
+    // Default fallback
+    else {
+      timeTaken = EXAM_TIME_MINUTES * 60;
+    }
+
     return {
       correctAnswers,
       totalQuestions: 40,
       timeTaken,
     };
-  }, [exam, answeredQuestions]);
+  }, [exam, answeredQuestions, updateExam]);
 
   /**
    * Changes current question in exam
@@ -203,10 +248,16 @@ export function useExamMode() {
    * Quit the exam and go to results
    */
   const handleQuit = useCallback(() => {
-    if (exam) {
-      updateExam({ isComplete: true });
-      setShowResults(true);
-    }
+    if (!exam || exam.isComplete) return;
+
+    const completedTime = Date.now();
+    finalExamTimeRef.current = completedTime - (exam.startTime || 0);
+
+    updateExam({
+      isComplete: true,
+      completedTime,
+    });
+    setShowResults(true);
   }, [exam, updateExam, setShowResults]);
 
   /**

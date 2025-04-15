@@ -41,6 +41,7 @@ export interface ExamState {
   startTime?: number;
   flaggedQuestions: number[];
   isReview?: boolean;
+  completedTime?: number;
 }
 
 // Application state
