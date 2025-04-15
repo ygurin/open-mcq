@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../../../../hooks/useAppContext';
 import { useCategoryTest } from '../../hooks/useCategoryTest';
+import { usePreventRefresh } from '../../../../hooks/usePreventRefresh';
 import Question from '../../../questions/components/Question/Question';
 import TestResults from '../TestResults/TestResults';
 import CategoryButton from '../../../categories/components/CategoryButton/CategoryButton';
@@ -39,6 +40,10 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
     reviewWrongAnswers,
     handleRestartTest
   } = useCategoryTest(getQuestions);
+  
+  // Prevent refresh when a category is selected and we're not in results view
+  const shouldPreventRefresh = !!selectedCategory && !showResults;
+  usePreventRefresh(shouldPreventRefresh, 'You have unsaved test progress. Are you sure you want to leave this page?');
 
   // If showing results
   if (showResults) {

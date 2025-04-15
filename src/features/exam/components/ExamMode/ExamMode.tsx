@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../../../../hooks/useAppContext';
 import { useExamMode } from '../../hooks/useExamMode';
+import { usePreventRefresh } from '../../../../hooks/usePreventRefresh';
 import Question from '../../../questions/components/Question/Question';
 import ExamTimer from '../ExamTimer/ExamTimer';
 import ExamResults from '../ExamResults/ExamResults';
@@ -28,6 +29,10 @@ const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
     handleBackToMenu,
     handleFlagQuestion
   } = useExamMode();
+  
+  // Only prevent refresh when there's an active exam and we're not in results view
+  const shouldPreventRefresh = !!exam && !showResults;
+  usePreventRefresh(shouldPreventRefresh, 'You have an active exam in progress. Are you sure you want to leave this page?');
 
   if (!exam) return null;
 

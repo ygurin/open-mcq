@@ -1,0 +1,95 @@
+.session-recovery-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100; /* Higher than other modals */
+}
+
+.session-recovery-modal {
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.session-recovery-modal h3 {
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.session-recovery-modal p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+
+.session-recovery-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.session-recovery-buttons button {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  min-width: 120px;
+}
+
+.discard-button {
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.discard-button:hover {
+  background-color: #e9ecef;
+}
+
+.restore-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.restore-button:hover {
+  background-color: #43a047;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 480px) {
+  .session-recovery-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .session-recovery-buttons button {
+    width: 100%;
+  }
+}

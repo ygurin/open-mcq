@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppContext } from '../../../../hooks/useAppContext';
 import { usePracticeMode } from '../../hooks/usePracticeMode';
+import { usePreventRefresh } from '../../../../hooks/usePreventRefresh';
 import Question from '../../../questions/components/Question/Question';
 import CategoryButton from '../../../categories/components/CategoryButton/CategoryButton';
 import { Item } from '../../../../types';
@@ -33,6 +34,8 @@ const PracticeMode: React.FC<PracticeModeProps> = ({
     handleQuit,
     isQuestionAnswered
   } = usePracticeMode(getQuestions);
+  
+  usePreventRefresh(!!selectedCategory, 'You have unsaved practice progress. Are you sure you want to leave this page?');
 
   // If no category is selected, show category selection screen
   if (!selectedCategory) {
