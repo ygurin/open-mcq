@@ -77,7 +77,13 @@ const SessionRecovery: React.FC<SessionRecoveryProps> = ({ onDismiss }) => {
     
     // Mode-specific state
     if (sessionData.testResults) setTestResults(sessionData.testResults);
-    if (sessionData.exam) setExam(sessionData.exam);
+    
+    if (sessionData.exam) {
+      const examData = {...sessionData.exam};
+      // letting recalculateRemainingTime handle this later in the ExamMode component
+      setExam(examData);
+    }
+    
     if (sessionData.showResults) setShowResults(sessionData.showResults);
     
     // Hide the dialog and continue to the app

@@ -16,6 +16,12 @@ const ExamTimer: React.FC<ExamTimerProps> = ({
   const [timeLeft, setTimeLeft] = useState(
     initialTimeLeft !== undefined ? initialTimeLeft : totalMinutes * 60
   );
+  
+  useEffect(() => {
+    if (initialTimeLeft !== undefined) {
+      setTimeLeft(initialTimeLeft);
+    }
+  }, [initialTimeLeft]);
 
   useEffect(() => {
     if (timeLeft <= 0) {

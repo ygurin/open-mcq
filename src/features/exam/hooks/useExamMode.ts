@@ -84,6 +84,8 @@ export function useExamMode() {
       // update with the calculated remaining time
       updateExam({ timeRemaining: remainingTimeSec });
     }
+
+    return remainingTimeSec;
   }, [exam, updateExam, setShowResults]);
 
   /**

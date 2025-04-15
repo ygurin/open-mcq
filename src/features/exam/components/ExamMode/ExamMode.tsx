@@ -38,9 +38,10 @@ const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
   // Recalculate remaining time when restoring from localStorage
   useEffect(() => {
     if (exam?.startTime) {
+      // Force an immediate update of the timeRemaining
       recalculateRemainingTime();
     }
-  }, []);
+  }, [recalculateRemainingTime, exam?.startTime]);
 
   if (!exam) return null;
 
