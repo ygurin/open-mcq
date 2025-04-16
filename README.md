@@ -138,7 +138,7 @@ The build output will be in the `dist` directory.
 
 ```bash
 docker build -t open-mcq .
-docker run -p 8080:80 open-mcq
+docker run -d -p 8080:80 open-mcq
 ```
 
 2. Visit `http://localhost:8080` in your browser.

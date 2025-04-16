@@ -3,8 +3,8 @@
 # Define data sources in arrays
 # Format: "Name|URL|ZipName"
 declare -a DATA_SOURCES=(
-    "Driver Theory Test (2019)|https://www.dropbox.com/scl/fi/d2i2x9kj6tss9x8tvltr9/open-mcq-data.zip?rlkey=edhaxy9gamrss60kauymen6nq&st=gtk17zyo&dl=0|open-mcq"
-    "Wildlife|https://www.dropbox.com/scl/fi/69agh49q7hamoylgd828a/wildlife-data.zip?rlkey=6b8kboedgf9x3tjeejijdotdb&st=db9zfpdk&dl=0|wildlife-data"
+    "Driver Theory Test (2019)|https://www.dropbox.com/scl/fi/d2i2x9kj6tss9x8tvltr9/open-mcq-data.zip?rlkey=edhaxy9gamrss60kauymen6nq&st=gtk17zyo&dl=1|open-mcq"
+    "Wildlife|https://www.dropbox.com/scl/fi/69agh49q7hamoylgd828a/wildlife-data.zip?rlkey=6b8kboedgf9x3tjeejijdotdb&st=db9zfpdk&dl=1|wildlife-data"
     # Add more data sources here in the same format
 )
 
@@ -86,7 +86,12 @@ show_menu() {
     echo "Note: Installing a new dataset will remove any existing data"
     echo ""
     
-    read -p "Enter your choice [1-$exit_option]: " choice
+    # Check if we received an input argument (non-interactive mode)
+    if [[ -n "$1" ]]; then
+        choice="$1"
+    else
+        read -p "Enter your choice [1-$exit_option]: " choice
+    fi
     
     # Check if the choice is within valid range
     if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "$exit_option" ]; then
@@ -119,8 +124,8 @@ echo "This script will download and install question datasets for Open MCQ"
 echo "WARNING: This will replace any existing data files and images"
 echo ""
 
-# Show the menu
-show_menu
+# Show the menu with the passed argument
+show_menu "$1"
 
 # Clean up
 echo "Cleaning up temporary files..."
