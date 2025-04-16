@@ -120,6 +120,65 @@ npm run build
 
 The build output will be in the `dist` directory.
 
+## Running with Docker
+
+### Prerequisites
+
+1. **Docker and Docker Compose**
+   - [Install Docker](https://docs.docker.com/get-docker/)
+   - [Install Docker Compose](https://docs.docker.com/compose/install/)
+
+2. **Ngrok Account (for public exposure)**
+   - [Sign up for ngrok](https://ngrok.com/signup)
+   - [Install ngrok](https://ngrok.com/download)
+
+### Running with Docker
+
+1. Build and start the container:
+
+```bash
+docker build -t open-mcq .
+docker run -p 8080:80 open-mcq
+```
+
+2. Visit `http://localhost:8080` in your browser.
+
+### Running with Docker Compose and Ngrok
+
+1. Set your ngrok authentication token as an environment variable:
+
+```bash
+export NGROK_AUTHTOKEN=your_ngrok_auth_token
+```
+
+2. Run the application with Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+3. Access your app:
+   - Locally: `http://localhost:8080`
+   - Ngrok dashboard: `http://localhost:4040`
+   - Public URL: Check the ngrok dashboard for the public URL
+
+4. To stop the containers:
+
+```bash
+docker-compose down
+```
+
+### Development with Docker
+
+You can use Docker for development with hot-reloading:
+
+```bash
+# Using the development Dockerfile
+docker-compose -f docker-compose.dev.yml up -d
+```
+
+This mounts your source code as volumes, allowing you to make changes and see them reflected immediately.
+
 ## Disclaimer
 
 This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors be liable for any claim, damages, or other liability arising from the use of this software.
