@@ -128,13 +128,9 @@ The build output will be in the `dist` directory.
    - [Install Docker](https://docs.docker.com/get-docker/)
    - [Install Docker Compose](https://docs.docker.com/compose/install/)
 
-2. **Ngrok Account (for public exposure)**
-   - [Sign up for ngrok](https://ngrok.com/signup)
-   - [Install ngrok](https://ngrok.com/download)
-
 ### Running with Docker
 
-1. Build and start the container:
+1. Build and start the container in detached mode:
 
 ```bash
 docker build -t open-mcq .
@@ -142,42 +138,37 @@ docker run -d -p 8080:80 open-mcq
 ```
 
 2. Visit `http://localhost:8080` in your browser.
-
-### Running with Docker Compose and Ngrok
-
-1. Set your ngrok authentication token as an environment variable:
+3. To Stop the container and remove the container:
 
 ```bash
-export NGROK_AUTHTOKEN=your_ngrok_auth_token
+docker stop [CONTAINER_ID] && docker rm [CONTAINER_ID]
 ```
 
-2. Run the application with Docker Compose:
+### Quickhost Publicly with Docker Compose and Serveo
+
+[Serveo](http://serveo.net/) is a free service that allows you to expose your local server to the internet without any account registration or API keys.
+
+1. Run the application with Docker Compose:
 
 ```bash
 docker-compose up -d
 ```
 
-3. Access your app:
+2. Access your app:
    - Locally: `http://localhost:8080`
-   - Ngrok dashboard: `http://localhost:4040`
-   - Public URL: Check the ngrok dashboard for the public URL
+   - Public URL: Check the terminal output from the serveo service for your public URL (something like `https://[random-subdomain].serveo.net`)
+
+3. To see the serveo service logs and get your public URL:
+
+```bash
+docker-compose logs -f serveo
+```
 
 4. To stop the containers:
 
 ```bash
 docker-compose down
 ```
-
-### Development with Docker
-
-You can use Docker for development with hot-reloading:
-
-```bash
-# Using the development Dockerfile
-docker-compose -f docker-compose.dev.yml up -d
-```
-
-This mounts your source code as volumes, allowing you to make changes and see them reflected immediately.
 
 ## Disclaimer
 
