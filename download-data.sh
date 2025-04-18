@@ -25,6 +25,10 @@ clean_existing_data() {
     if [ -d "public/images" ]; then
         rm -rf public/images/*
         echo "- Removed existing images"
+    else
+        # Create the images directory if it doesn't exist
+        mkdir -p public/images
+        echo "- Created public/images directory"
     fi
 }
 
@@ -63,72 +67,53 @@ download_and_install() {
     return 0
 }
 
-# Main menu function
-show_menu() {
-    echo "=========================================="
-    echo "         Open MCQ Data Installer          "
-    echo "=========================================="
-    echo "Please select a dataset to download:"
-    echo ""
-    
-    # Display menu options dynamically based on available data sources
-    for i in "${!DATA_SOURCES[@]}"; do
-        # Extract the name part (first segment before |)
-        name=$(echo "${DATA_SOURCES[$i]}" | cut -d'|' -f1)
-        echo "$((i+1))) $name Questions"
-    done
-    
-    # Add exit option
-    exit_option=$((${#DATA_SOURCES[@]}+1))
-    
-    echo "$exit_option) Exit"
-    echo ""
-    echo "Note: Installing a new dataset will remove any existing data"
-    echo ""
-    
-    # Check if we received an input argument (non-interactive mode)
-    if [[ -n "$1" ]]; then
-        choice="$1"
-    else
-        read -p "Enter your choice [1-$exit_option]: " choice
-    fi
+# Main function to process based on input
+process_selection() {
+    local choice=$1
     
     # Check if the choice is within valid range
-    if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "$exit_option" ]; then
-        if [ "$choice" -eq "$exit_option" ]; then
-            echo "Exiting..."
-            exit 0
-        else
-            # Calculate the actual index in the array (0-based)
-            index=$((choice-1))
-            
-            # Extract data from the array
-            name=$(echo "${DATA_SOURCES[$index]}" | cut -d'|' -f1)
-            url=$(echo "${DATA_SOURCES[$index]}" | cut -d'|' -f2)
-            zip_name=$(echo "${DATA_SOURCES[$index]}" | cut -d'|' -f3)
-            
-            echo "You selected $name Questions"
-            # Clean existing data before downloading
-            clean_existing_data
-            download_and_install "$url" "$zip_name"
-        fi
+    if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "${#DATA_SOURCES[@]}" ]; then
+        # Calculate the actual index in the array (0-based)
+        index=$((choice-1))
+        
+        # Extract data from the array
+        name=$(echo "${DATA_SOURCES[$index]}" | cut -d'|' -f1)
+        url=$(echo "${DATA_SOURCES[$index]}" | cut -d'|' -f2)
+        zip_name=$(echo "${DATA_SOURCES[$index]}" | cut -d'|' -f3)
+        
+        echo "Selected: $name Questions"
+        # Clean existing data before downloading
+        clean_existing_data
+        download_and_install "$url" "$zip_name"
+        
+        return $?
     else
-        echo "Invalid choice. Please try again."
-        show_menu
+        echo "Invalid choice: $choice. Must be between 1 and ${#DATA_SOURCES[@]}"
+        return 1
     fi
 }
 
 # Welcome message
-echo "Welcome to the Open MCQ Data Installer"
+echo "Running Open MCQ Data Installer for Netlify"
 echo "This script will download and install question datasets for Open MCQ"
-echo "WARNING: This will replace any existing data files and images"
-echo ""
 
-# Show the menu with the passed argument
-show_menu "$1"
+# Process the selection from argument
+if [ -n "$1" ]; then
+    process_selection "$1"
+else
+    echo "ERROR: No dataset selection provided. Please specify a number between 1 and ${#DATA_SOURCES[@]}"
+    exit 1
+fi
 
 # Clean up
 echo "Cleaning up temporary files..."
 rm -rf "$TEMP_DIR"
 
-echo "Installation completed successfully!"
+# Check if data.json exists as a final verification
+if [ -f "src/data.json" ]; then
+    echo "Installation completed successfully!"
+    exit 0
+else
+    echo "ERROR: data.json was not created. The download may have failed."
+    exit 1
+fi
