@@ -8,6 +8,12 @@ An open-source multiple-choice question platform built with React. Open MCQ prov
 
 With Open MCQ, you can practice test questions in various modes and prepare for exams in a user-friendly environment. Education should be free and accessible to everyone which drove the development of this tool.
 
+<p align="center">
+  <a href="https://superlative-moonbeam-3aaea9.netlify.app" target="_blank">
+    <img src="https://img.shields.io/badge/Try_the_Demo-4CAF50?style=for-the-badge" alt="Try the Demo" />
+  </a>
+</p>
+
 You can easily [use your own data](#using-your-own-data) to customize the platform for any subject or exam preparation needs.
 
 <p align="center">
