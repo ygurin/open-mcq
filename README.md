@@ -148,6 +148,13 @@ docker stop [CONTAINER_ID] && docker rm [CONTAINER_ID]
 
 [Serveo](http://serveo.net/) is a free service that allows you to expose your local server to the internet without any account registration or API keys.
 
+> **Note**: Docker Compose has two syntax versions:
+> - **Docker Compose V2**: Uses `docker compose` (without hyphen)
+> - **Docker Compose V1**: Uses `docker-compose` (with hyphen)
+>
+> The examples below use V1 syntax. If you're using Docker Compose V2, replace `docker-compose` with `docker compose` in all commands.
+> If unsure start with `--help` e.g. `docker compose --help`
+
 1. Run the application with Docker Compose:
 
 ```bash
