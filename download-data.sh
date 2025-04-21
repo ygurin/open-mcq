@@ -128,7 +128,7 @@ process_selection() {
         return $?
     else
         echo "Invalid choice: $choice. Must be between 1 and ${#DATA_SOURCES[@]}"
-        return 1
+        exit 1
     fi
 }
 
@@ -136,20 +136,33 @@ process_selection() {
 if [ -n "$1" ]; then
     # If argument is provided, use it directly for selection
     process_selection "$1"
+    
+    # Clean up only if we get here (valid selection)
+    echo "Cleaning up temporary files..."
+    rm -rf "$TEMP_DIR"
+    
+    # Check if data.json exists as a final verification
+    if [ -f "src/data.json" ]; then
+        echo "Installation completed successfully!"
+        exit 0
+    else
+        echo "ERROR: data.json was not created. The download may have failed."
+        exit 1
+    fi
 else
     # If no argument, show interactive menu
     display_menu_and_select
-fi
-
-# Clean up
-echo "Cleaning up temporary files..."
-rm -rf "$TEMP_DIR"
-
-# Check if data.json exists as a final verification
-if [ -f "src/data.json" ]; then
-    echo "Installation completed successfully!"
-    exit 0
-else
-    echo "ERROR: data.json was not created. The download may have failed."
-    exit 1
+    
+    # Clean up only if we get here (valid selection from menu)
+    echo "Cleaning up temporary files..."
+    rm -rf "$TEMP_DIR"
+    
+    # Check if data.json exists as a final verification
+    if [ -f "src/data.json" ]; then
+        echo "Installation completed successfully!"
+        exit 0
+    else
+        echo "ERROR: data.json was not created. The download may have failed."
+        exit 1
+    fi
 fi
