@@ -3,6 +3,7 @@
 # Define data sources in arrays
 # Format: "Name|URL|ZipName"
 declare -a DATA_SOURCES=(
+    "Driver Theory Test (2025)|https://www.dropbox.com/scl/fi/cuasl7mlabtc01q78polw/open-mcq-data-25.zip?rlkey=ftd8okjk0uju1d2bj5e3f6s3l&st=monxnjkp&dl=1|open-mcq"
     "Driver Theory Test (2019)|https://www.dropbox.com/scl/fi/d2i2x9kj6tss9x8tvltr9/open-mcq-data.zip?rlkey=edhaxy9gamrss60kauymen6nq&st=gtk17zyo&dl=1|open-mcq"
     "Wildlife|https://www.dropbox.com/scl/fi/69agh49q7hamoylgd828a/wildlife-data.zip?rlkey=6b8kboedgf9x3tjeejijdotdb&st=db9zfpdk&dl=1|wildlife-data"
     # Add more data sources here in the same format
@@ -67,6 +68,44 @@ download_and_install() {
     return 0
 }
 
+# Function to display menu and handle interactive selection
+display_menu_and_select() {
+    echo "Welcome to the Open MCQ Data Installer"
+    echo "This script will download and install question datasets for Open MCQ"
+    echo "WARNING: This will replace any existing data files and images"
+    echo
+    echo "=========================================="
+    echo "         Open MCQ Data Installer"
+    echo "=========================================="
+    echo "Please select a dataset to download:"
+    echo
+    
+    # Display available options
+    local i=1
+    for source in "${DATA_SOURCES[@]}"; do
+        name=$(echo "$source" | cut -d'|' -f1)
+        echo "$i) $name Questions"
+        i=$((i+1))
+    done
+    
+    # Add exit option
+    echo "$i) Exit"
+    echo
+    
+    # Get user choice
+    read -p "Enter your choice: " choice
+    
+    # Process exit choice
+    if [ "$choice" == "$i" ]; then
+        echo "Exiting without downloading any data."
+        exit 0
+    fi
+    
+    # Process dataset selection
+    process_selection "$choice"
+    return $?
+}
+
 # Main function to process based on input
 process_selection() {
     local choice=$1
@@ -93,16 +132,13 @@ process_selection() {
     fi
 }
 
-# Welcome message
-echo "Running Open MCQ Data Installer for Netlify"
-echo "This script will download and install question datasets for Open MCQ"
-
-# Process the selection from argument
+# Main script logic
 if [ -n "$1" ]; then
+    # If argument is provided, use it directly for selection
     process_selection "$1"
 else
-    echo "ERROR: No dataset selection provided. Please specify a number between 1 and ${#DATA_SOURCES[@]}"
-    exit 1
+    # If no argument, show interactive menu
+    display_menu_and_select
 fi
 
 # Clean up
