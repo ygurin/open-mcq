@@ -44,6 +44,7 @@ chmod +x download-data.sh
 
 Select the dataset:
 ```text
+╰─❯ ./download-data.sh
 Welcome to the Open MCQ Data Installer
 This script will download and install question datasets for Open MCQ
 WARNING: This will replace any existing data files and images
@@ -53,10 +54,15 @@ WARNING: This will replace any existing data files and images
 ==========================================
 Please select a dataset to download:
 
-1) Driver Theory Test (2019) Questions
-2) Wildlife Questions
-3) Exit
+1) Driver Theory Test (2025) Questions
+2) Driver Theory Test (2019) Questions
+3) Wildlife Questions
+4) Exit
+
+Enter your choice:
 ```
+
+**Note:** You can also set a number param when running the script to avoid interactive mode, e.g. `./download-data.sh 1`
 
 4. Start the development server
 
