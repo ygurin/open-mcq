@@ -112,7 +112,7 @@ You can use your own questions by creating a `data.json` file in the `src` direc
 - `question`: The main question text
 - `heading`: Category name for grouping questions
 - `explanation`: Shown after answering in practice mode
-- `questions`: Array of 4 possible answers
+- `questions`: Array of 2-4 possible answers (supports variable number of options)
 - `answer`: The correct answer (must match one of the options exactly)
 - `id`: Unique identifier for the question
 - `update`: Last update date (YYYY-MM-DD format)
