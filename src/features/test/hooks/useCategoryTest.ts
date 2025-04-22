@@ -78,7 +78,7 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
         selectedAnswer,
       });
 
-      // Update test results for this category
+      // We use the random subset which is what getQuestions returns
       const categoryQuestions = getQuestions(selectedCategory);
       const categoryResults = testResults[selectedCategory] || {
         totalQuestions: 0,
@@ -131,6 +131,7 @@ export function useCategoryTest(getQuestions: (category: string) => Item[]) {
     (category: string, wrongAnswers: string[]) => {
       if (wrongAnswers.length === 0) return;
 
+      // Use the same question set that was used for the test (random subset)
       const questions = getQuestions(category);
       const firstWrongQuestionIndex = questions.findIndex((q) =>
         wrongAnswers.includes(q.id)
