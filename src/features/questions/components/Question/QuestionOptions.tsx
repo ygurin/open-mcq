@@ -54,7 +54,11 @@ const QuestionOptions: React.FC<QuestionOptionsProps> = ({
           className += ' exam-answered';
         }
       } else {
-        if (selectedAnswer === answer && isCorrect) {
+        // For practice and category-test modes
+        if (answer === correctAnswer && !isCorrect) {
+          // Highlight the correct answer when user got it wrong
+          className += ' show-correct';
+        } else if (selectedAnswer === answer && isCorrect) {
           className += ' correct';
         } else if (selectedAnswer === answer && !isCorrect) {
           className += ' incorrect';
