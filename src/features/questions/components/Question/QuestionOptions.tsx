@@ -97,21 +97,3 @@ const QuestionOptions: React.FC<QuestionOptionsProps> = ({
 };
 
 export default QuestionOptions;
-
-// Then update Question.tsx to use this component
-// import QuestionOptions from './QuestionOptions';
-// And replace the question-options div with:
-/*
-<QuestionOptions
-  options={shuffledOptions.options}
-  selectedAnswer={selectedAnswer}
-  isAnswered={isAnswered}
-  isCorrect={isCorrect}
-  correctAnswer={correctAnswer}
-  mode={mode}
-  onOptionSelect={handleOptionSelect}
-  flaggedQuestions={flaggedQuestions}
-  currentQuestionIndex={currentQuestionIndex}
-  hintedAnswer={hintedAnswer}
-/>
-*/
