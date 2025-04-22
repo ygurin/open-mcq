@@ -73,7 +73,7 @@ npm run dev
 ## Features
 
 - **Practice Mode**: Study questions with instant feedback and explanations
-- **Category Test Mode**: Take tests in specific categories with scoring
+- **Category Test Mode**: Take tests in specific categories with scoring (20 randomly selected questions)
 - **Exam Mode**: 45-minute timed exam with 40 random questions
   - **Question Flagging**: Mark questions for review
 
