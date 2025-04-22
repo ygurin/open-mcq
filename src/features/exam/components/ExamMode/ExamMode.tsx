@@ -84,10 +84,7 @@ const ExamMode: React.FC<ExamModeProps> = ({ getImage }) => {
         heading={currentQuestion.heading}
         ques={currentQuestion.question}
         image={currentQuestion.image ? getImage(currentQuestion.image) : undefined}
-        q1={currentQuestion.questions[0]}
-        q2={currentQuestion.questions[1]}
-        q3={currentQuestion.questions[2]}
-        q4={currentQuestion.questions[3]}
+        options={currentQuestion.questions}
         explanation={currentQuestion.explanation}
         onNext={handleNext}
         onPrevious={handlePrevious}

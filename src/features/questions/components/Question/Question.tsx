@@ -11,10 +11,7 @@ interface QuestionProps {
   heading: string;
   ques: string;
   image?: string;
-  q1: string;
-  q2: string;
-  q3: string;
-  q4: string;
+  options: string[];
   explanation?: string;
   onNext: () => void;
   onPrevious: () => void;
@@ -43,10 +40,7 @@ const Question: FC<QuestionProps> = ({
   heading,
   ques,
   image,
-  q1,
-  q2,
-  q3,
-  q4,
+  options,
   explanation,
   onNext,
   onPrevious,
@@ -71,7 +65,7 @@ const Question: FC<QuestionProps> = ({
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
   const [shuffledOptions, setShuffledOptions] = useState<ShuffledQuestion>({ 
-    options: [q1, q2, q3, q4],
+    options: [...options],
     correctAnswerIndex: 0
   });
   const [hintedAnswer, setHintedAnswer] = useState<string | null>(null);
@@ -98,11 +92,10 @@ const Question: FC<QuestionProps> = ({
   }, [onQuit]);
 
   useEffect(() => {
-    const options = [q1, q2, q3, q4];
     const shuffled = shuffleQuestionOptions(options, correctAnswer);
     setShuffledOptions(shuffled);
     setShowAnswer(false);
-  }, [currentQuestionIndex, q1, q2, q3, q4, correctAnswer]);
+  }, [currentQuestionIndex, options, correctAnswer]);
 
   const areAllQuestionsAnswered = answeredQuestions.every(q => q.isAnswered);
 
@@ -143,21 +136,21 @@ const Question: FC<QuestionProps> = ({
             case 'ArrowUp':
             case 'ArrowDown': {
               e.preventDefault();
-              const options = shuffledOptions.options;
+              const optionsList = shuffledOptions.options;
               if (!selectedAnswer) {
-                onAnswerSelect(options[0]);
+                onAnswerSelect(optionsList[0]);
                 return;
               }
-              const currentIndex = options.indexOf(selectedAnswer);
+              const currentIndex = optionsList.indexOf(selectedAnswer);
               if (currentIndex === -1) return;
               
               let newIndex;
               if (e.key === 'ArrowUp') {
-                newIndex = currentIndex > 0 ? currentIndex - 1 : options.length - 1;
+                newIndex = currentIndex > 0 ? currentIndex - 1 : optionsList.length - 1;
               } else {
-                newIndex = currentIndex < options.length - 1 ? currentIndex + 1 : 0;
+                newIndex = currentIndex < optionsList.length - 1 ? currentIndex + 1 : 0;
               }
-              onAnswerSelect(options[newIndex]);
+              onAnswerSelect(optionsList[newIndex]);
               break;
             }
             
