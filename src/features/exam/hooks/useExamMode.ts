@@ -110,10 +110,45 @@ export function useExamMode() {
   );
 
   /**
+   * Submit answers for all flagged questions that haven't been answered yet
+   */
+  const submitFlaggedQuestions = useCallback(() => {
+    if (!exam) return;
+
+    // Process each flagged question
+    exam.flaggedQuestions.forEach((flaggedIndex) => {
+      const questionKey = createExamQuestionKey(flaggedIndex);
+      const existingState = answeredQuestions[questionKey];
+
+      // Skip if already answered
+      if (existingState?.isAnswered) return;
+
+      // If flagged but not answered, submit the selected answer if one exists,
+      // otherwise just mark as answered with the current selection
+      if (existingState?.selectedAnswer) {
+        const currentQuestion = exam.questions[flaggedIndex];
+        const isCorrect =
+          existingState.selectedAnswer === currentQuestion.answer;
+
+        updateAnsweredQuestion(questionKey, {
+          isAnswered: true,
+          isCorrect,
+          selectedAnswer: existingState.selectedAnswer,
+        });
+      }
+    });
+  }, [exam, answeredQuestions, updateAnsweredQuestion]);
+
+  /**
    * Handles time up event in exam
    */
   const handleExamTimeUp = useCallback(() => {
     if (!exam || exam.isComplete) return;
+
+    // Auto-submit flagged questions that haven't been answered yet
+    if (exam.flaggedQuestions.length > 0) {
+      submitFlaggedQuestions();
+    }
 
     const completedTime = Date.now();
     finalExamTimeRef.current = completedTime - (exam.startTime || 0);
@@ -128,7 +163,7 @@ export function useExamMode() {
       completedTime,
     });
     setShowResults(true);
-  }, [exam, updateExam, setShowResults]);
+  }, [exam, updateExam, setShowResults, submitFlaggedQuestions]);
 
   /**
    * Calculate exam results
@@ -261,6 +296,11 @@ export function useExamMode() {
   const handleQuit = useCallback(() => {
     if (!exam || exam.isComplete) return;
 
+    // Auto-submit flagged questions that haven't been answered yet
+    if (exam.flaggedQuestions.length > 0) {
+      submitFlaggedQuestions();
+    }
+
     const completedTime = Date.now();
     finalExamTimeRef.current = completedTime - (exam.startTime || 0);
 
@@ -274,7 +314,7 @@ export function useExamMode() {
       completedTime,
     });
     setShowResults(true);
-  }, [exam, updateExam, setShowResults]);
+  }, [exam, updateExam, setShowResults, submitFlaggedQuestions]);
 
   /**
    * Enable review mode for exam questions
