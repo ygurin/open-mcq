@@ -171,6 +171,13 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
               <p>Total Available: {getQuestions(selectedCategoryForCount).length} questions</p>
               
               <div className="question-count-slider-container">
+                <button 
+                  className="slider-arrow-button"
+                  onClick={() => setSliderValue(prev => Math.max(1, prev - 1))}
+                  disabled={sliderValue <= 1}
+                >
+                  &#x25C0;
+                </button>
                 <input
                   type="range"
                   min="1"
@@ -179,6 +186,13 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
                   onChange={(e) => setSliderValue(Number(e.target.value))}
                   className="question-count-slider"
                 />
+                <button 
+                  className="slider-arrow-button"
+                  onClick={() => setSliderValue(prev => Math.min(getQuestions(selectedCategoryForCount).length, prev + 1))}
+                  disabled={sliderValue >= getQuestions(selectedCategoryForCount).length}
+                >
+                  &#x25B6;
+                </button>
                 <div className="slider-value-display">
                   <span>{sliderValue} Questions</span>
                 </div>
