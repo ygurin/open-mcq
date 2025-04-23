@@ -92,20 +92,9 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
     if (allQuestions.length > 0) {
       setSelectedCategoryForCount(category);
       
-      // If there are 20 or fewer questions, skip the selection UI
-      if (allQuestions.length <= 20) {
-        setSelectedCategory(category);
-        
-        if (mode !== 'review') {
-          initializeRandomQuestions(category, allQuestions.length);
-        } else {
-          setSelectedQuestion("0");
-        }
-      } else {
-        // Show question count selector for categories with more than 20 questions
-        setSliderValue(Math.min(20, allQuestions.length));
-        setShowQuestionCountSelector(true);
-      }
+      // Set default to 20 or the maximum available if less than 20
+      setSliderValue(Math.min(20, allQuestions.length));
+      setShowQuestionCountSelector(true);
     }
   };
 
