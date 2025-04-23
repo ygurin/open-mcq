@@ -7,6 +7,7 @@ import TestResults from '../TestResults/TestResults';
 import CategoryButton from '../../../categories/components/CategoryButton/CategoryButton';
 import { Item } from '../../../../types';
 import { getRandomQuestions, CategoryTestQuestions } from '../../../../utils/getRandomQuestions';
+import './CategoryTest.css';
 
 interface CategoryTestProps {
   getCategories: () => string[];
@@ -34,6 +35,11 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
 
   // Store random questions for each category
   const [categoryTestQuestions, setCategoryTestQuestions] = useState<Record<string, CategoryTestQuestions>>({});
+  
+  // New state for question count selection UI
+  const [showQuestionCountSelector, setShowQuestionCountSelector] = useState(false);
+  const [selectedCategoryForCount, setSelectedCategoryForCount] = useState<string | null>(null);
+  const [sliderValue, setSliderValue] = useState(20);
 
   const {
     handleAnswerSelection,
@@ -59,12 +65,12 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
   usePreventRefresh(shouldPreventRefresh, 'You have unsaved test progress. Are you sure you want to leave this page?');
 
   // Generate the random question set when a category is selected
-  const initializeRandomQuestions = (category: string) => {
+  const initializeRandomQuestions = (category: string, count: number) => {
     const allQuestions = getQuestions(category);
     if (allQuestions.length === 0) return;
     
-    // Generate random subset of questions (max 20)
-    const randomQuestions = getRandomQuestions(allQuestions, 20);
+    // Generate random subset of questions
+    const randomQuestions = getRandomQuestions(allQuestions, count);
     
     // Store both the random subset and the original questions
     setCategoryTestQuestions(prev => ({
@@ -77,6 +83,35 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
     
     // Reset to the first question
     setSelectedQuestion("0");
+  };
+
+  // Handler for when a category is clicked
+  const handleCategoryClick = (category: string) => {
+    const allQuestions = getQuestions(category);
+    
+    if (allQuestions.length > 0) {
+      setSelectedCategoryForCount(category);
+      
+      // Set default to 20 or the maximum available if less than 20
+      setSliderValue(Math.min(20, allQuestions.length));
+      setShowQuestionCountSelector(true);
+    }
+  };
+
+  // Handler for when user selects the number of questions
+  const handleQuestionCountSelection = (count: number) => {
+    if (!selectedCategoryForCount) return;
+    
+    setSelectedCategory(selectedCategoryForCount);
+    
+    if (mode !== 'review') {
+      initializeRandomQuestions(selectedCategoryForCount, count);
+    } else {
+      setSelectedQuestion("0");
+    }
+    
+    setShowQuestionCountSelector(false);
+    setSelectedCategoryForCount(null);
   };
 
   // Render exam results screen
@@ -112,22 +147,7 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
             return (
               <CategoryButton
                 key={categ}
-                onSelectCategory={(e) => {
-                  const newCategory = e.currentTarget.value;
-                  const allQuestions = getQuestions(newCategory);
-                  
-                  if (allQuestions.length > 0) {
-                    setSelectedCategory(newCategory);
-                    
-                    // Only initialize random questions if not in review mode
-                    if (mode !== 'review') {
-                      initializeRandomQuestions(newCategory);
-                    } else {
-                      // In review mode, use the first question
-                      setSelectedQuestion("0");
-                    }
-                  }
-                }}
+                onSelectCategory={() => handleCategoryClick(categ)}
                 text={`${categ} ${categoryProgress}`} 
               />
             );
@@ -141,6 +161,63 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
             Back to Mode Selection
           </button>
         </div>
+
+        {/* Question Count Selector Modal */}
+        {showQuestionCountSelector && selectedCategoryForCount && (
+          <div className="question-count-selector-overlay">
+            <div className="question-count-selector-modal">
+              <h3>Select Number of Questions</h3>
+              <p>Category: {selectedCategoryForCount}</p>
+              <p>Total Available: {getQuestions(selectedCategoryForCount).length} questions</p>
+              
+              <div className="question-count-slider-container">
+                <button 
+                  className="slider-arrow-button"
+                  onClick={() => setSliderValue(prev => Math.max(1, prev - 1))}
+                  disabled={sliderValue <= 1}
+                >
+                  &#x25C0;
+                </button>
+                <input
+                  type="range"
+                  min="1"
+                  max={getQuestions(selectedCategoryForCount).length}
+                  value={sliderValue}
+                  onChange={(e) => setSliderValue(Number(e.target.value))}
+                  className="question-count-slider"
+                />
+                <button 
+                  className="slider-arrow-button"
+                  onClick={() => setSliderValue(prev => Math.min(getQuestions(selectedCategoryForCount).length, prev + 1))}
+                  disabled={sliderValue >= getQuestions(selectedCategoryForCount).length}
+                >
+                  &#x25B6;
+                </button>
+                <div className="slider-value-display">
+                  <span>{sliderValue} Questions</span>
+                </div>
+              </div>
+              
+              <div className="modal-actions">
+                <button 
+                  className="confirm-button"
+                  onClick={() => handleQuestionCountSelection(sliderValue)}
+                >
+                  Start Test
+                </button>
+                <button 
+                  className="cancel-button"
+                  onClick={() => {
+                    setShowQuestionCountSelector(false);
+                    setSelectedCategoryForCount(null);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -154,7 +231,7 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
     
   // If random questions don't exist yet (somehow), initialize them now
   if (questionList.length === 0) {
-    initializeRandomQuestions(selectedCategory);
+    initializeRandomQuestions(selectedCategory, 20);
     // Use the full set temporarily until initialization completes
     questionList = getQuestions(selectedCategory);
   }
