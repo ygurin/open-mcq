@@ -39,6 +39,7 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
   // New state for question count selection UI
   const [showQuestionCountSelector, setShowQuestionCountSelector] = useState(false);
   const [selectedCategoryForCount, setSelectedCategoryForCount] = useState<string | null>(null);
+  const [sliderValue, setSliderValue] = useState(20);
 
   const {
     handleAnswerSelection,
@@ -102,6 +103,7 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
         }
       } else {
         // Show question count selector for categories with more than 20 questions
+        setSliderValue(Math.min(20, allQuestions.length));
         setShowQuestionCountSelector(true);
       }
     }
@@ -179,56 +181,37 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
               <p>Category: {selectedCategoryForCount}</p>
               <p>Total Available: {getQuestions(selectedCategoryForCount).length} questions</p>
               
-              <div className="question-count-options">
-                <button 
-                  className="count-option"
-                  onClick={() => handleQuestionCountSelection(10)}
-                >
-                  10 Questions
-                </button>
-                <button 
-                  className="count-option"
-                  onClick={() => handleQuestionCountSelection(20)}
-                >
-                  20 Questions
-                </button>
-                <button 
-                  className="count-option"
-                  onClick={() => handleQuestionCountSelection(30)}
-                >
-                  30 Questions
-                </button>
-                <button 
-                  className="count-option"
-                  onClick={() => handleQuestionCountSelection(40)}
-                >
-                  40 Questions
-                </button>
-                {getQuestions(selectedCategoryForCount).length > 40 && (
-                  <button 
-                    className="count-option"
-                    onClick={() => handleQuestionCountSelection(50)}
-                  >
-                    50 Questions
-                  </button>
-                )}
-                <button 
-                  className="count-option all-questions"
-                  onClick={() => handleQuestionCountSelection(getQuestions(selectedCategoryForCount).length)}
-                >
-                  All Questions ({getQuestions(selectedCategoryForCount).length})
-                </button>
+              <div className="question-count-slider-container">
+                <input
+                  type="range"
+                  min="1"
+                  max={getQuestions(selectedCategoryForCount).length}
+                  value={sliderValue}
+                  onChange={(e) => setSliderValue(Number(e.target.value))}
+                  className="question-count-slider"
+                />
+                <div className="slider-value-display">
+                  <span>{sliderValue} Questions</span>
+                </div>
               </div>
               
-              <button 
-                className="cancel-button"
-                onClick={() => {
-                  setShowQuestionCountSelector(false);
-                  setSelectedCategoryForCount(null);
-                }}
-              >
-                Cancel
-              </button>
+              <div className="modal-actions">
+                <button 
+                  className="confirm-button"
+                  onClick={() => handleQuestionCountSelection(sliderValue)}
+                >
+                  Start Test
+                </button>
+                <button 
+                  className="cancel-button"
+                  onClick={() => {
+                    setShowQuestionCountSelector(false);
+                    setSelectedCategoryForCount(null);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         )}
