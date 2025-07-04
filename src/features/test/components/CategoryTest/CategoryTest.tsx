@@ -164,8 +164,11 @@ const CategoryTest: React.FC<CategoryTestProps> = ({
 
         {/* Question Count Selector Modal */}
         {showQuestionCountSelector && selectedCategoryForCount && (
-          <div className="question-count-selector-overlay">
-            <div className="question-count-selector-modal">
+          <div className="question-count-selector-overlay" onClick={() => {
+            setShowQuestionCountSelector(false);
+            setSelectedCategoryForCount(null);
+          }}>
+            <div className="question-count-selector-modal" onClick={(e) => e.stopPropagation()}>
               <h3>Select Number of Questions</h3>
               <p>Category: {selectedCategoryForCount}</p>
               <p>Total Available: {getQuestions(selectedCategoryForCount).length} questions</p>

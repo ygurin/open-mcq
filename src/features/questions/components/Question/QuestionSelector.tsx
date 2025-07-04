@@ -62,8 +62,8 @@ const QuestionSelector: React.FC<QuestionSelectorProps> = ({
       </button>
 
       {isOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className="modal-overlay" onClick={() => setIsOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Select Question</h3>
               <button
