@@ -300,22 +300,7 @@ const Question: FC<QuestionProps> = ({
           )}
         </div>
 
-        <div className="button-group">
-          <button 
-            onClick={onPrevious}
-            disabled={!hasPrevious}
-            className="nav-button"
-          >
-            Previous
-          </button>
-          <button 
-            onClick={onNext}
-            disabled={!hasNext}
-            className="nav-button"
-          >
-            Next
-          </button>
-        </div>
+        
 
         {mode === 'practice' && (
           <div className="button-group">
