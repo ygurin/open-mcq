@@ -156,9 +156,9 @@ docker run -d -p 8080:80 open-mcq
 docker stop [CONTAINER_ID] && docker rm [CONTAINER_ID]
 ```
 
-### Quickhost Publicly with Docker Compose and Serveo
+### Quickhost Publicly with Docker Compose and localhost.run
 
-[Serveo](http://serveo.net/) is a free service that allows you to expose your local server to the internet without any account registration or API keys.
+[localhost.run](https://localhost.run/) is a free service that allows you to expose your local server to the internet without any account registration or API keys.
 
 > **Note**: Docker Compose has two syntax versions:
 > - **Docker Compose V2**: Uses `docker compose` (without hyphen)
@@ -175,12 +175,12 @@ docker-compose up -d
 
 2. Access your app:
    - Locally: `http://localhost:8080`
-   - Public URL: Check the terminal output from the serveo service for your public URL (something like `https://[random-subdomain].serveo.net`)
+   - Public URL: Check the terminal output from the localhost-run service for your public URL (something like `https://[random-subdomain].localhost.run`)
 
-3. To see the serveo service logs and get your public URL:
+3. To see the localhost-run service logs and get your public URL:
 
 ```bash
-docker-compose logs -f serveo
+docker-compose logs -f localhost-run
 ```
 
 4. To stop the containers:

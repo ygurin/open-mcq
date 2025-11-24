@@ -9,7 +9,7 @@ services:
     networks:
       - app-network
 
-  serveo:
+  localhost-run:
     image: alpine:latest
     restart: unless-stopped
     depends_on:
@@ -20,10 +20,10 @@ services:
       /bin/sh -c "
         apk add --no-cache openssh-client &&
         mkdir -p ~/.ssh &&
-        echo 'Host serveo.net' > ~/.ssh/config &&
+        echo 'Host localhost.run' > ~/.ssh/config &&
         echo '    StrictHostKeyChecking no' >> ~/.ssh/config &&
         echo '    UserKnownHostsFile=/dev/null' >> ~/.ssh/config &&
-        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -R 80:app:80 serveo.net
+        ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -R 80:app:80 nokey@localhost.run
       "
     tty: true
     stdin_open: true
