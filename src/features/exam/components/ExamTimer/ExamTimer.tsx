@@ -47,7 +47,7 @@ const ExamTimer: React.FC<ExamTimerProps> = ({
 
   return (
     <div className={`exam-timer ${getColorClass()}`}>
-      Time Remaining: {minutes}:{seconds.toString().padStart(2, '0')}
+      Time Remaining: <span translate="no" className="notranslate" key={timeLeft}>{minutes}:{seconds.toString().padStart(2, '0')}</span>
     </div>
   );
 };
